@@ -1,0 +1,53 @@
+<div class="sidebar-container" [class.collapsed]="sidebarCollapsed()">
+  <div class="header">
+    <h3>
+      <span class="arrow" (click)="toggleSidebar()">
+        {{ sidebarCollapsed() ? '<' : '>' }}
+      </span>
+      Filter Contracts
+    </h3>
+  </div>
+
+  <div *ngIf="!sidebarCollapsed()" class="content-wrapper">
+    <div class="tab-buttons">
+      <button [class.active]="selectedTab() === 'My Contracts'" (click)="setTab('My Contracts')">My Contracts</button>
+      <button [class.active]="selectedTab() === 'All Contracts'" (click)="setTab('All Contracts')">All Contracts</button>
+      <button [class.active]="selectedTab() === 'Favourites'" (click)="setTab('Favourites')">Favourites</button>
+    </div>
+
+    <div class="search-section">
+      <input type="text" [(ngModel)]="searchQueryValue" placeholder="Search job number or contract name..." />
+      <button class="advanced-btn">Advanced Search</button>
+    </div>
+
+    <div class="result-count">Result: {{ filteredContracts.length }} Contracts</div>
+
+    <div class="current-header" (click)="toggleProjectList()">
+      <span class="arrow">{{ projectListCollapsed() ? '▶' : '▼' }}</span>
+      Current Projects
+    </div>
+
+    <!-- Scroll only this section -->
+    <div class="tree-scroll-wrapper" *ngIf="!projectListCollapsed()">
+      <kendo-treeview
+        [nodes]="filteredContracts"
+        kendoTreeViewExpandable
+        kendoTreeViewCheckable
+        childrenField="children"
+        textField="name"
+        [(checkedKeys)]="checkedKeys"
+  (checkedKeysChange)="emitSelectedProjectIds()">
+        <ng-template kendoTreeViewNodeTemplate let-dataItem>
+          <span class="tree-icon">
+            <span *ngIf="dataItem.icon === 'folder'" class="k-icon k-i-folder"></span>
+            <span *ngIf="dataItem.icon === 'file'" class="k-icon k-i-file"></span>
+          </span>
+          {{ dataItem.name }}
+          <span class="star" (click)="toggleFavourite(dataItem, $event)">
+            {{ isFavourite(dataItem) ? '★' : '☆' }}
+          </span>
+        </ng-template>
+      </kendo-treeview>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="login-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <img src="../../assets/Logo.png" alt="IEP Logo" class="logo" />
+
+    <h2>Sign in</h2>
+
+    <label for="ssoId">SSO ID*</label>
+    <input id="ssoId" kendoTextBox formControlName="ssoId" placeholder="david.johnson@bakerhughes.com" />
+
+    <label for="password">Password*</label>
+    <input id="password" kendoTextBox type="password" formControlName="password" placeholder="**************" />
+
+    <div class="remember-me">
+      <input id="rememberMe" type="checkbox" formControlName="rememberMe" />
+      <label for="rememberMe">Remember me</label>
+    </div>
+
+    <button kendoButton type="submit" [disabled]="loginForm.invalid" class="login-button">Login</button>
+  </form>
+</div>

@@ -1,0 +1,74 @@
+<div class="filter-activities-wrapper">
+  <div class="filter-header">
+    <h4>Filter Activities</h4>
+    <div class="filter-actions">
+      <button class="clear-button" (click)="clearFilters()">Clear Filter</button>
+      <button class="arrow-button" (click)="toggleExpanded()">&#9662;</button>
+    </div>
+  </div>
+
+  <div class="filter-row" *ngIf="isExpanded()">
+    <div class="filter-field">
+      <label>View As</label>
+      <kendo-dropdownlist
+        [data]="viewAsList"
+        [ngModel]="viewAs()"
+        (ngModelChange)="viewAs.set($event); onAnyChange()"
+      ></kendo-dropdownlist>
+    </div>
+
+    <div class="filter-field">
+      <label>Functions</label>
+      <kendo-dropdownlist
+        [data]="functionsList"
+        [ngModel]="functions()"
+        (ngModelChange)="functions.set($event); onAnyChange()"
+      ></kendo-dropdownlist>
+    </div>
+
+    <div class="filter-field">
+      <label>Document Type</label>
+      <kendo-dropdownlist
+        [data]="documentTypeList"
+        [ngModel]="documentType()"
+        (ngModelChange)="documentType.set($event); onAnyChange()"
+      ></kendo-dropdownlist>
+    </div>
+
+    <div class="filter-field">
+      <label>Activity Status</label>
+      <kendo-dropdownlist
+        [data]="statusList"
+        [ngModel]="status()"
+        (ngModelChange)="status.set($event); onAnyChange()"
+      ></kendo-dropdownlist>
+    </div>
+
+    <div class="filter-field">
+      <label>Activity Type</label>
+      <kendo-dropdownlist
+        [data]="activityTypeList"
+        [ngModel]="activityType()"
+        (ngModelChange)="activityType.set($event); onAnyChange()"
+      ></kendo-dropdownlist>
+    </div>
+
+    <div class="filter-field">
+      <label>Finish By</label>
+      <kendo-dropdownlist
+        [data]="finishByList"
+        [ngModel]="finishBy()"
+        (ngModelChange)="finishBy.set($event); onAnyChange()"
+      ></kendo-dropdownlist>
+    </div>
+
+    <div class="filter-field">
+      <label>Date Type</label>
+      <kendo-dropdownlist
+        [data]="dateTypeList"
+        [ngModel]="dateType()"
+        (ngModelChange)="dateType.set($event); onAnyChange()"
+      ></kendo-dropdownlist>
+    </div>
+  </div>
+</div>

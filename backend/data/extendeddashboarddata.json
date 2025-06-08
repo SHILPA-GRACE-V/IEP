@@ -1,0 +1,189 @@
+[
+  {
+    "projectId": "1104096",
+    "subProjects": [
+      {
+        "activityId": "ACT123",
+        "activityName": "Pipeline Review",
+        "primaryResource": "Amanda Johnson",
+        "earlyDate": "2024-10-14",
+        "viewAs": "Individual",
+        "functions": "ENG, TECH",
+        "documentType": "Internal",
+        "activityStatus": "Not Completed",
+        "activityType": "560",
+        "finishBy": "Late Finish"
+      }
+    ]
+  },
+  {
+    "projectId": "9000133",
+    "subProjects": [
+      {
+        "activityId": "ACT456",
+        "activityName": "Component Check",
+        "primaryResource": "Robert Fox",
+        "earlyDate": "2024-10-15",
+        "viewAs": "Individual",
+        "functions": "ENG, TECH",
+        "documentType": "Step",
+        "activityStatus": "Not Completed",
+        "activityType": "510",
+        "finishBy": "Late Finish"
+      }
+    ]
+  },
+  {
+    "projectId": "1709043",
+    "subProjects": [
+      {
+        "activityId": "ACT789",
+        "activityName": "Design Analysis",
+        "primaryResource": "Savannah Nguyen",
+        "earlyDate": "2024-10-20",
+        "viewAs": "Group",
+        "functions": "TECH",
+        "documentType": "Internal",
+        "activityStatus": "In Progress",
+        "activityType": "530",
+        "finishBy": "On Time"
+      }
+    ]
+  },
+  {
+    "projectId": "1104088",
+    "subProjects": [
+      {
+        "activityId": "ACT321",
+        "activityName": "System Testing",
+        "primaryResource": "Liam Patel",
+        "earlyDate": "2024-10-18",
+        "viewAs": "Individual",
+        "functions": "ENG",
+        "documentType": "Step",
+        "activityStatus": "Completed",
+        "activityType": "540",
+        "finishBy": "Early Finish"
+      }
+    ]
+  },
+  {
+    "projectId": "1104057",
+    "subProjects": [
+      {
+        "activityId": "ACT654",
+        "activityName": "Code Review",
+        "primaryResource": "Emily Zhang",
+        "earlyDate": "2024-10-22",
+        "viewAs": "Individual",
+        "functions": "QA",
+        "documentType": "Internal",
+        "activityStatus": "Not Completed",
+        "activityType": "570",
+        "finishBy": "Late Finish"
+      }
+    ]
+  },
+  {
+    "projectId": "1104133",
+    "subProjects": [
+      {
+        "activityId": "ACT987",
+        "activityName": "Client Approval",
+        "primaryResource": "Carlos Diaz",
+        "earlyDate": "2024-10-25",
+        "viewAs": "Group",
+        "functions": "ENG, TECH",
+        "documentType": "External",
+        "activityStatus": "Not Completed",
+        "activityType": "590",
+        "finishBy": "Late Finish"
+      }
+    ]
+  },
+  {
+    "projectId": "1104170",
+    "subProjects": [
+      {
+        "activityId": "ACT111",
+        "activityName": "Documentation",
+        "primaryResource": "Zara Khan",
+        "earlyDate": "2024-10-26",
+        "viewAs": "Group",
+        "functions": "QA",
+        "documentType": "Internal",
+        "activityStatus": "Completed",
+        "activityType": "520",
+        "finishBy": "On Time"
+      }
+    ]
+  },
+  {
+    "projectId": "1104175",
+    "subProjects": [
+      {
+        "activityId": "ACT112",
+        "activityName": "Site Visit",
+        "primaryResource": "Daniel Kim",
+        "earlyDate": "2024-10-27",
+        "viewAs": "Individual",
+        "functions": "ENG",
+        "documentType": "External",
+        "activityStatus": "In Progress",
+        "activityType": "580",
+        "finishBy": "Late Finish"
+      }
+    ]
+  },
+  {
+    "projectId": "1104180",
+    "subProjects": [
+      {
+        "activityId": "ACT113",
+        "activityName": "Vendor Coordination",
+        "primaryResource": "Sophia Li",
+        "earlyDate": "2024-10-28",
+        "viewAs": "Group",
+        "functions": "TECH",
+        "documentType": "Internal",
+        "activityStatus": "Not Completed",
+        "activityType": "550",
+        "finishBy": "On Time"
+      }
+    ]
+  },
+  {
+    "projectId": "1104190",
+    "subProjects": [
+      {
+        "activityId": "ACT114",
+        "activityName": "Training Session",
+        "primaryResource": "Lucas Gray",
+        "earlyDate": "2024-10-29",
+        "viewAs": "Individual",
+        "functions": "ENG, QA",
+        "documentType": "Internal",
+        "activityStatus": "Completed",
+        "activityType": "510",
+        "finishBy": "Early Finish"
+      }
+    ]
+  },
+  {
+    "projectId": "1104200",
+    "subProjects": [
+      {
+        "activityId": "ACT115",
+        "activityName": "Feedback Review",
+        "primaryResource": "Ava Singh",
+        "earlyDate": "2024-10-30",
+        "viewAs": "Group",
+        "functions": "TECH",
+        "documentType": "Step",
+        "activityStatus": "Not Completed",
+        "activityType": "570",
+        "finishBy": "Late Finish"
+      }
+    ]
+  }
+]

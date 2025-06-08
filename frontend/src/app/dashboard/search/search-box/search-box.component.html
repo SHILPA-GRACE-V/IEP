@@ -1,0 +1,7 @@
+<input
+  kendoTextBox
+  placeholder="Search activities..."
+  [value]="search()"
+  (input)="search.set($any($event.target).value)"
+  style="width: 100%; margin-bottom: 10px"
+/>

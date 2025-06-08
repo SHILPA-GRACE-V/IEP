@@ -1,0 +1,28 @@
+<div class="activity-grid-wrapper">
+  <div class="activity-header">
+    <span class="title">Activities</span>
+    <span class="count">Result: {{ data.length }} Activities</span>
+    <div class="search-wrapper">
+      <input type="text" [(ngModel)]="globalSearch" placeholder="Search in all columns" />
+      <span class="icon">
+  <img src="../../../../assets/search.png" alt="Search Icon" />
+</span>
+
+    </div>
+  </div>
+
+  <kendo-grid
+    [data]="filteredGridData"
+    [pageSize]="10"
+    [pageable]="true"
+    [height]="420"
+    [sortable]="true">
+    
+    <kendo-grid-column field="projectId" title="Project ID" [width]="160"></kendo-grid-column>
+    <kendo-grid-column field="activityId" title="Activity ID" [width]="160"></kendo-grid-column>
+    <kendo-grid-column field="activityName" title="Activity Name" [width]="250"></kendo-grid-column>
+    <kendo-grid-column field="primaryResource" title="Primary Resource Name" [width]="200"></kendo-grid-column>
+    <kendo-grid-column field="earlyDate" title="Early Date" [width]="150"></kendo-grid-column>
+
+  </kendo-grid>
+</div>

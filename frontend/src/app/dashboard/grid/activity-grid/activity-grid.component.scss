@@ -1,0 +1,53 @@
+.activity-grid-wrapper {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  .title {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .count {
+    font-size: 13px;
+    color: #555;
+  }
+
+  .search-wrapper {
+    display: flex;
+    align-items: center;
+
+    input {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .icon {
+      margin-left: 6px;
+      font-size: 14px;
+    }
+  }
+}
+.icon {
+  display: inline-block;
+  cursor: pointer;
+
+  img {
+    width: 20px;  // Adjust the size of the image as needed
+    height: 20px; // Adjust the size of the image as needed
+    object-fit: contain;  // Ensures the image maintains its aspect ratio and fits within the box
+
+    // Optional: Add hover effect for interactivity
+    &:hover {
+      opacity: 0.8; // Slightly reduce opacity when hovered
+    }
+  }
+}
