@@ -1,76 +1,151 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TreeViewModule } from '@progress/kendo-angular-treeview';
 
 @Component({
   selector: 'app-contract-tree',
   standalone: true,
-  imports: [CommonModule, FormsModule, TreeViewModule],
   templateUrl: './contract-tree.component.html',
-  styleUrls: ['./contract-tree.component.scss']
+  styleUrls: ['./contract-tree.component.scss'],
+  imports: [CommonModule, FormsModule]
 })
 export class ContractTreeComponent {
-  @Input() contractsData: any[] = [];
-  @Output() selectedProjects = new EventEmitter<string[]>();
 
-  checkedKeys: any[] = [];
-  searchQueryValue: string = '';
-  selectedTab = signal('My Contracts');
-  favourites = signal<Set<string>>(new Set());
+  /* ───────── Inputs / Outputs ───────── */
+  @Input()  contractsData: any[] = [];
+  @Output() emitSelectedProjectIds = new EventEmitter<string[]>();
+
+  /* ───────── Reactive state ───────── */
+  searchQueryValue = '';
+  checkedKeys: string[] = [];
+
+  selectedTab      = signal('My Contracts');
+  favourites       = signal<Set<string>>(new Set());
   sidebarCollapsed = signal(false);
   projectListCollapsed = signal(false);
+  showAdvancedSearch  = false;
 
-  toggleSidebar() {
-    this.sidebarCollapsed.set(!this.sidebarCollapsed());
+  expandedProjects  = new Set<string>();   // level-0
+  expandedLevel1    = new Set<string>();   // new: level-1
+
+  /* ───────── UI toggles ───────── */
+  toggleSidebar()        { this.sidebarCollapsed.set(!this.sidebarCollapsed()); }
+  toggleProjectList()    { this.projectListCollapsed.set(!this.projectListCollapsed()); }
+  toggleAdvancedSearch() { this.showAdvancedSearch = !this.showAdvancedSearch; }
+  setTab(t:string)       { this.selectedTab.set(t); }
+
+  toggleFavourite(pid:string){
+    const s=new Set(this.favourites());
+    s.has(pid) ? s.delete(pid) : s.add(pid);
+    this.favourites.set(s);
   }
 
-  toggleProjectList() {
-    this.projectListCollapsed.set(!this.projectListCollapsed());
+  toggleExpanded(pid:string){
+    this.expandedProjects.has(pid) ? this.expandedProjects.delete(pid)
+                                   : this.expandedProjects.add(pid);
+  }
+  /** level-1 toggle */
+  toggleExpandedLevel1(id:string){
+    this.expandedLevel1.has(id) ? this.expandedLevel1.delete(id)
+                                : this.expandedLevel1.add(id);
   }
 
-  setTab(tab: string) {
-    this.selectedTab.set(tab);
+  /* ───────── Recursively gather IDs ───────── */
+  private collectIds(node:any): string[]{
+    const list:string[]=[];
+    if(node.activityId) list.push(node.activityId);
+    const kids = node.subProjects
+               ?? node.subProjectsLevel2
+               ?? node.subProjectsLevel3
+               ?? [];
+    kids.forEach((k:any)=> list.push(...this.collectIds(k)));
+    return list;
   }
 
-  toggleFavourite(contract: any, event: MouseEvent) {
-    event.stopPropagation();
-    const favs = new Set(this.favourites());
-    favs.has(contract.key) ? favs.delete(contract.key) : favs.add(contract.key);
-    this.favourites.set(favs);
+  /* ───────── Checkbox handling ───────── */
+  toggleChecked(id:string){
+    const idx=this.checkedKeys.indexOf(id);
+    idx>=0 ? this.checkedKeys.splice(idx,1) : this.checkedKeys.push(id);
+    this.onSelectionChange();
   }
 
-  isFavourite(contract: any): boolean {
-    return this.favourites().has(contract.key);
+  // onSelectionChange(){
+  //   const selected=this.checkedKeys.filter(k=>k.length===7);
+  //   this.emitSelectedProjectIds.emit(selected);
+  // }
+
+onSelectionChange(): void {
+  const selected: string[] = [];
+
+  for (const project of this.contractsData) {
+    /* all activity IDs belonging to this project (any depth) */
+    const ids = project.subProjects.flatMap((sp: any) => this.collectIds(sp));
+
+    /* if one of those IDs is checked -> include this project */
+    if (ids.some((id: string) => this.checkedKeys.includes(id))) {
+      selected.push(project.projectId);
+    }
   }
 
-  get filteredContracts() {
-    const search = this.searchQueryValue.toLowerCase();
-    const tab = this.selectedTab();
+  this.emitSelectedProjectIds.emit(selected);
+}
 
-    return this.contractsData.filter(contract => {
-      const nameMatch = contract.name.toLowerCase().includes(search) ||
-        contract.children?.some((c: any) => c.name.toLowerCase().includes(search));
-      if (!nameMatch) return false;
 
-      if (tab === 'My Contracts') return contract.myContract;
-      if (tab === 'Favourites') return this.favourites().has(contract.key);
-      return true;
-    });
+  isPartiallyChecked(p:any){
+    const all = p.subProjects.flatMap((sp:any)=> this.collectIds(sp));
+    const hit = all.filter((id:string)=> this.checkedKeys.includes(id));
+    return hit.length>0 && hit.length<all.length;
+  }
+  areAllSubprojectsChecked(p:any){
+    const all = p.subProjects.flatMap((sp:any)=> this.collectIds(sp));
+    return all.every((id:string)=> this.checkedKeys.includes(id));
   }
 
-  ngOnChanges() {
-    this.emitSelectedProjectIds();
+  toggleAllSubprojects(ev:Event,p:any){
+    ev.stopPropagation();
+    const all = p.subProjects.flatMap((sp:any)=> this.collectIds(sp));
+    const checked = (ev.target as HTMLInputElement).checked;
+    this.checkedKeys = checked
+      ? Array.from(new Set([...this.checkedKeys, ...all]))
+      : this.checkedKeys.filter(id=>!all.includes(id));
+    this.onSelectionChange();
   }
 
-  emitSelectedProjectIds() {
-    const selectedProjectIds = this.checkedKeys.filter(key =>
-      this.contractsData.some(contract => contract.key === key)
+  areAllProjectsChecked():boolean{
+    const all=this.filteredContracts
+      .flatMap(prj=>prj.subProjects.flatMap((sp:any)=> this.collectIds(sp)));
+    return all.length>0 && all.every((id:string)=> this.checkedKeys.includes(id));
+  }
+  toggleAllProjects(ev:Event){
+    const checked=(ev.target as HTMLInputElement).checked;
+    const all=this.filteredContracts
+      .flatMap(prj=>prj.subProjects.flatMap((sp:any)=> this.collectIds(sp)));
+    this.checkedKeys = checked
+      ? Array.from(new Set([...this.checkedKeys, ...all]))
+      : this.checkedKeys.filter(id=>!all.includes(id));
+    this.onSelectionChange();
+  }
+
+  /* ───────── Search / filter ───────── */
+  get filteredContracts():any[]{
+    const q=this.searchQueryValue.trim().toLowerCase();
+    let list=this.contractsData;
+
+    if(this.selectedTab()==='Favourites'){
+      list=list.filter(p=> this.favourites().has(p.projectId));
+    }
+    if(!q) return list;
+
+    const match=(s:string)=> s?.toLowerCase().includes(q);
+    return list.filter(p =>
+      match(p.treePath) ||
+      p.subProjects?.some((sp:any)=>
+        match(sp.activityName) ||
+        sp.subProjectsLevel2?.some((s2:any)=>
+          match(s2.activityName) ||
+          s2.subProjectsLevel3?.some((s3:any)=> match(s3.activityName))
+        )
+      )
     );
-    this.selectedProjects.emit(selectedProjectIds);
-  }
-
-  ngDoCheck() {
-    this.emitSelectedProjectIds(); // Always emit when project selection changes
   }
 }

@@ -1,28 +1,120 @@
-<div class="activity-grid-wrapper">
-  <div class="activity-header">
-    <span class="title">Activities</span>
-    <span class="count">Result: {{ data.length }} Activities</span>
-    <div class="search-wrapper">
-      <input type="text" [(ngModel)]="globalSearch" placeholder="Search in all columns" />
-      <span class="icon">
-  <img src="../../../../assets/search.png" alt="Search Icon" />
-</span>
+<div class="activity-grid-wrapper" [class.expanded]="gridExpanded">
 
+  <!-- ═══════ header ═══════ -->
+  <div class="activity-header">
+    <!-- left: title -->
+    <div class="title-box">
+      <span class="title">Activities</span>
+      <span class="count">Result: {{ pagedData.total }} Activities</span>
+    </div>
+
+    <!-- right-hand controls -->
+    <div class="actions">
+
+      <!-- search pill -->
+      <label class="search-wrapper">
+        <input
+          type="text"
+          [(ngModel)]="globalSearch"
+          placeholder="Search in all column" />
+        <img src="../../../../assets/search.png" class="search-icon" />
+      </label>
+
+      <!-- expand / close -->
+      <button class="icon-btn"
+              (click)="toggleExpand()"
+              [title]="gridExpanded ? 'Close' : 'Expand'">
+        <img *ngIf="!gridExpanded"
+             src="../../../../assets/fullscreen.png" alt="Expand" />
+        <img *ngIf="gridExpanded"
+             src="../../../../assets/close.png"       alt="Close"  />
+      </button>
+
+      <!-- settings -->
+      <button class="icon-btn" (click)="openSettings()" title="Settings">
+        <img src="../../../../assets/setting.png" alt="Settings" />
+      </button>
+
+      <!-- 3-dot menu -->
+      <div class="menu-wrapper">
+        <button class="icon-btn" (click)="showMenu = !showMenu" title="More">
+          <img src="../../../../assets/more.png" />
+        </button>
+
+        <ul class="menu" *ngIf="showMenu" (click)="$event.stopPropagation()">
+          <li><a (click)="exportCSV()">Export to CSV</a></li>
+          <li><a (click)="printGrid()">Print</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <kendo-grid
-    [data]="filteredGridData"
-    [pageSize]="10"
-    [pageable]="true"
-    [height]="420"
-    [sortable]="true">
-    
-    <kendo-grid-column field="projectId" title="Project ID" [width]="160"></kendo-grid-column>
-    <kendo-grid-column field="activityId" title="Activity ID" [width]="160"></kendo-grid-column>
-    <kendo-grid-column field="activityName" title="Activity Name" [width]="250"></kendo-grid-column>
-    <kendo-grid-column field="primaryResource" title="Primary Resource Name" [width]="200"></kendo-grid-column>
-    <kendo-grid-column field="earlyDate" title="Early Date" [width]="150"></kendo-grid-column>
+  <!-- empty-state banner -->
+  <div class="empty-banner" *ngIf="pagedData.total === 0">
+    <span>No Data is availabe</span>
+  </div>
+
+  <!-- Kendo Grid -->
+  <kendo-grid *ngIf="pagedData.total"
+              [data]="pagedData"
+              [height]="gridExpanded ? 560 : 420"
+              [pageSize]="pageSize"
+              [skip]="skip"
+              [pageable]="pagerSettings"
+              [sortable]="true"
+              scrollable="virtual"
+              [rowHeight]="36"
+              (pageChange)="pageChange($event)">
+
+    <!-- Project ID -->
+    <kendo-grid-column field="projectId" [width]="160">
+      <ng-template kendoGridHeaderTemplate>
+        <div class="hdr-wrap">
+          <span>Project&nbsp;ID</span>
+          <img src="../../../../assets/more.png" class="hdr-icon" />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Activity ID -->
+    <kendo-grid-column field="activityId" [width]="160">
+      <ng-template kendoGridHeaderTemplate>
+        <div class="hdr-wrap">
+          <span>Activity&nbsp;ID</span>
+          <img src="../../../../assets/more.png" class="hdr-icon" />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Activity Name -->
+    <kendo-grid-column field="activityName" [width]="250">
+      <ng-template kendoGridHeaderTemplate>
+        <div class="hdr-wrap">
+          <span>Activity&nbsp;Name</span>
+          <img src="../../../../assets/more.png" class="hdr-icon" />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Primary Resource Name -->
+    <kendo-grid-column field="primaryResource" [width]="200">
+      <ng-template kendoGridHeaderTemplate>
+        <div class="hdr-wrap">
+          <span>Primary&nbsp;Resource&nbsp;Name</span>
+          <img src="../../../../assets/more.png" class="hdr-icon" />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Early Date -->
+    <kendo-grid-column field="earlyDate" [width]="150">
+      <ng-template kendoGridHeaderTemplate>
+        <div class="hdr-wrap">
+          <span>Early&nbsp;Date</span>
+          <img src="../../../../assets/more.png" class="hdr-icon" />
+        </div>
+      </ng-template>
+    </kendo-grid-column>
 
   </kendo-grid>
 </div>

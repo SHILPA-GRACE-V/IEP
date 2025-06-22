@@ -1,53 +1,137 @@
-<div class="sidebar-container" [class.collapsed]="sidebarCollapsed()">
-  <div class="header">
-    <h3>
-      <span class="arrow" (click)="toggleSidebar()">
-        {{ sidebarCollapsed() ? '<' : '>' }}
-      </span>
-      Filter Contracts
-    </h3>
+<div class="contract-layout">
+  <!-- ╭───────── Vertical quick-nav bar ─────────╮ -->
+  <div class="vertical-sidebar">
+    <div class="sidebar-icon" (click)="toggleSidebar()"><img src="../../../../assets/sliders.png" /></div>
+    <div class="sidebar-icon"><img src="../../../../assets/grid.png" /></div>
+    <div class="sidebar-icon active"><img src="../../../../assets/folder.png" /></div>
+    <div class="sidebar-icon"><img src="../../../../assets/open-folder.png" /></div>
+    <div class="sidebar-icon"><img src="../../../../assets/verified.png" /></div>
+    <div class="sidebar-icon"><img src="../../../../assets/user-profile.png" /></div>
+    <div class="sidebar-icon"><img src="../../../../assets/setting.png" /></div>
   </div>
 
-  <div *ngIf="!sidebarCollapsed()" class="content-wrapper">
-    <div class="tab-buttons">
-      <button [class.active]="selectedTab() === 'My Contracts'" (click)="setTab('My Contracts')">My Contracts</button>
-      <button [class.active]="selectedTab() === 'All Contracts'" (click)="setTab('All Contracts')">All Contracts</button>
-      <button [class.active]="selectedTab() === 'Favourites'" (click)="setTab('Favourites')">Favourites</button>
+  <!-- ╭───────── Collapsible filter / tree ─────────╮ -->
+  <div class="sidebar-container" [class.collapsed]="sidebarCollapsed()">
+    <!-- header -->
+    <div class="header">
+      <h3>Filter&nbsp;Contracts</h3>
+      <span class="arrow" (click)="toggleSidebar()"><img src="../../../../assets/arrow.png" /></span>
     </div>
 
-    <div class="search-section">
-      <input type="text" [(ngModel)]="searchQueryValue" placeholder="Search job number or contract name..." />
-      <button class="advanced-btn">Advanced Search</button>
-    </div>
+    <!-- body -->
+    <div *ngIf="!sidebarCollapsed()" class="content-wrapper">
 
-    <div class="result-count">Result: {{ filteredContracts.length }} Contracts</div>
+      <!-- tabs -->
+      <div class="tab-buttons">
+        <button [class.active]="selectedTab() === 'My Contracts'"  (click)="setTab('My Contracts')">My&nbsp;Contracts</button>
+        <button [class.active]="selectedTab() === 'All Contracts'" (click)="setTab('All Contracts')">All&nbsp;Contracts</button>
+        <button [class.active]="selectedTab() === 'Favourites'"    (click)="setTab('Favourites')">Favourites</button>
+      </div>
 
-    <div class="current-header" (click)="toggleProjectList()">
-      <span class="arrow">{{ projectListCollapsed() ? '▶' : '▼' }}</span>
-      Current Projects
-    </div>
+      <!-- search + advanced -->
+      <div class="search-section">
+        <div class="search-input-wrapper">
+          <input [(ngModel)]="searchQueryValue" placeholder="Search job number or contract name…" />
+        </div>
 
-    <!-- Scroll only this section -->
-    <div class="tree-scroll-wrapper" *ngIf="!projectListCollapsed()">
-      <kendo-treeview
-        [nodes]="filteredContracts"
-        kendoTreeViewExpandable
-        kendoTreeViewCheckable
-        childrenField="children"
-        textField="name"
-        [(checkedKeys)]="checkedKeys"
-  (checkedKeysChange)="emitSelectedProjectIds()">
-        <ng-template kendoTreeViewNodeTemplate let-dataItem>
-          <span class="tree-icon">
-            <span *ngIf="dataItem.icon === 'folder'" class="k-icon k-i-folder"></span>
-            <span *ngIf="dataItem.icon === 'file'" class="k-icon k-i-file"></span>
-          </span>
-          {{ dataItem.name }}
-          <span class="star" (click)="toggleFavourite(dataItem, $event)">
-            {{ isFavourite(dataItem) ? '★' : '☆' }}
-          </span>
-        </ng-template>
-      </kendo-treeview>
+        <button class="advanced-btn" (click)="toggleAdvancedSearch()" [class.expanded]="showAdvancedSearch">
+          <img src="../../../../assets/right-arrow.png"               class="arrow right" />
+          <img src="../../../../assets/arrow-down-sign-to-navigate.png" class="arrow down" />
+          Advanced&nbsp;Search
+        </button>
+      </div>
+
+      <div *ngIf="showAdvancedSearch" class="advanced-search-panel">Advanced filters …</div>
+
+      <!-- Current Projects header -->
+      <div class="project-header" (click)="toggleProjectList()">
+        <span class="arrow">
+          <img [src]="projectListCollapsed()
+                     ? '../../../../assets/right-arrow.png'
+                     : '../../../../assets/arrow-down-sign-to-navigate.png'" />
+        </span>
+        <input type="checkbox"
+               [checked]="areAllProjectsChecked()"
+               (click)="toggleAllProjects($event); $event.stopPropagation();" />
+        <span class="project-title">Current&nbsp;Projects</span>
+      </div>
+
+      <!-- tree ------------------------------------------------------ -->
+      <div class="tree-list-scroll" *ngIf="!projectListCollapsed()">
+        <div class="result-count">Result: {{ filteredContracts.length }} Contracts</div>
+
+        <div class="tree-list">
+          <!-- level-0 projects -->
+          <ng-container *ngFor="let project of filteredContracts">
+            <div class="tree-project">
+              <span (click)="toggleExpanded(project.projectId)">
+                <img class="toggle-arrow"
+                     [src]="expandedProjects.has(project.projectId)
+                             ? '../../../../assets/arrow-down-sign-to-navigate.png'
+                             : '../../../../assets/right-arrow.png'" />
+              </span>
+
+              <input type="checkbox"
+                     [checked]="areAllSubprojectsChecked(project)"
+                     [indeterminate]="isPartiallyChecked(project)"
+                     (click)="toggleAllSubprojects($event, project)" />
+
+              <span>{{ project.treePath }}</span>
+
+              <span class="star" (click)="toggleFavourite(project.projectId)">
+                <img [src]="favourites().has(project.projectId)
+                         ? '../../../../assets/star.png'
+                         : '../../../../assets/rate.png'" />
+              </span>
+            </div>
+
+            <!-- level-1 ------------------------------------------------>
+            <div class="tree-activity" *ngIf="expandedProjects.has(project.projectId)">
+              <ng-container *ngFor="let act of project.subProjects">
+                <!-- level-1 row with its own chevron -->
+                <div class="row-item">
+                  <span (click)="toggleExpandedLevel1(act.activityId)">
+                    <img class="toggle-arrow"
+                         [src]="expandedLevel1.has(act.activityId)
+                                 ? '../../../../assets/arrow-down-sign-to-navigate.png'
+                                 : '../../../../assets/right-arrow.png'" />
+                  </span>
+
+                  <input type="checkbox"
+                         [checked]="checkedKeys.includes(act.activityId)"
+                         (change)="toggleChecked(act.activityId)" />
+
+                  {{ act.activityName }}
+                </div>
+
+                <!-- level-2 -->
+                <div class="tree-activity level2"
+                     *ngIf="expandedLevel1.has(act.activityId) && act.subProjectsLevel2?.length">
+                  <ng-container *ngFor="let sub of act.subProjectsLevel2">
+                    <div class="row-item">
+                      <input type="checkbox"
+                             [checked]="checkedKeys.includes(sub.activityId)"
+                             (change)="toggleChecked(sub.activityId)" />
+                      {{ sub.activityName }}
+                    </div>
+
+                    <!-- level-3 -->
+                    <div class="tree-activity level3"
+                         *ngIf="sub.subProjectsLevel3?.length">
+                      <div *ngFor="let sub3 of sub.subProjectsLevel3" class="row-item">
+                        <input type="checkbox"
+                               [checked]="checkedKeys.includes(sub3.activityId)"
+                               (change)="toggleChecked(sub3.activityId)" />
+                        {{ sub3.activityName }}
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+      </div>
     </div>
   </div>
 </div>

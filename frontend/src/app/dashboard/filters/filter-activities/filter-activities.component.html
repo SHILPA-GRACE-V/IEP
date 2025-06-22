@@ -1,74 +1,139 @@
-<div class="filter-activities-wrapper">
-  <div class="filter-header">
+<div class="filter-panel">
+  <!-- header -->
+  <div class="panel-header">
     <h4>Filter Activities</h4>
-    <div class="filter-actions">
-      <button class="clear-button" (click)="clearFilters()">Clear Filter</button>
-      <button class="arrow-button" (click)="toggleExpanded()">&#9662;</button>
+
+    <div class="panel-actions">
+      <button class="link-btn" (click)="clearFilters()">Clear Filter</button>
+      <button class="collapse-btn" (click)="toggleExpanded()">
+        <span [class.rotated]="!isExpanded()">▾</span>
+      </button>
     </div>
   </div>
 
-  <div class="filter-row" *ngIf="isExpanded()">
-    <div class="filter-field">
+  <!-- filter controls -->
+  <div class="controls-grid" *ngIf="isExpanded()">
+
+    <!-- View As -->
+    <div class="ctrl">
       <label>View As</label>
-      <kendo-dropdownlist
+      <kendo-multiselect
         [data]="viewAsList"
-        [ngModel]="viewAs()"
-        (ngModelChange)="viewAs.set($event); onAnyChange()"
-      ></kendo-dropdownlist>
+        [value]="viewAs()"
+        [checkboxes]="true"        tagMode="single"
+        [tagMapper]="commaLabel"
+        (valueChange)="viewAs.set($event); onAnyChange()">
+        <ng-template kendoMultiSelectCheckAll>All</ng-template>
+      </kendo-multiselect>
     </div>
 
-    <div class="filter-field">
+    <!-- Functions -->
+    <div class="ctrl">
       <label>Functions</label>
-      <kendo-dropdownlist
+      <kendo-multiselect
         [data]="functionsList"
-        [ngModel]="functions()"
-        (ngModelChange)="functions.set($event); onAnyChange()"
-      ></kendo-dropdownlist>
+        [value]="functions()"
+        [checkboxes]="true"        tagMode="single"
+        [tagMapper]="commaLabel"
+        (valueChange)="functions.set($event); onAnyChange()">
+        <ng-template kendoMultiSelectCheckAll>All</ng-template>
+      </kendo-multiselect>
     </div>
 
-    <div class="filter-field">
+    <!-- Document Type -->
+    <div class="ctrl">
       <label>Document Type</label>
-      <kendo-dropdownlist
+      <kendo-multiselect
         [data]="documentTypeList"
-        [ngModel]="documentType()"
-        (ngModelChange)="documentType.set($event); onAnyChange()"
-      ></kendo-dropdownlist>
+        [value]="documentType()"
+        [checkboxes]="true"        tagMode="single"
+        [tagMapper]="commaLabel"
+        (valueChange)="documentType.set($event); onAnyChange()">
+        <ng-template kendoMultiSelectCheckAll>All</ng-template>
+      </kendo-multiselect>
     </div>
 
-    <div class="filter-field">
+    <!-- Activity Status -->
+    <div class="ctrl">
       <label>Activity Status</label>
-      <kendo-dropdownlist
+      <kendo-multiselect
         [data]="statusList"
-        [ngModel]="status()"
-        (ngModelChange)="status.set($event); onAnyChange()"
-      ></kendo-dropdownlist>
+        [value]="status()"
+        [checkboxes]="true"        tagMode="single"
+        [tagMapper]="commaLabel"
+        (valueChange)="status.set($event); onAnyChange()">
+        <ng-template kendoMultiSelectCheckAll>All</ng-template>
+      </kendo-multiselect>
     </div>
 
-    <div class="filter-field">
+    <!-- Activity Type -->
+    <div class="ctrl">
       <label>Activity Type</label>
-      <kendo-dropdownlist
+      <kendo-multiselect
         [data]="activityTypeList"
-        [ngModel]="activityType()"
-        (ngModelChange)="activityType.set($event); onAnyChange()"
-      ></kendo-dropdownlist>
+        [value]="activityType()"
+        [checkboxes]="true"        tagMode="single"
+        [tagMapper]="commaLabel"
+        (valueChange)="activityType.set($event); onAnyChange()">
+        <ng-template kendoMultiSelectCheckAll>All</ng-template>
+      </kendo-multiselect>
     </div>
 
-    <div class="filter-field">
+    <!-- Finish By -->
+    <div class="ctrl">
       <label>Finish By</label>
-      <kendo-dropdownlist
+      <kendo-multiselect
         [data]="finishByList"
-        [ngModel]="finishBy()"
-        (ngModelChange)="finishBy.set($event); onAnyChange()"
-      ></kendo-dropdownlist>
+        [value]="finishBy()"
+        [checkboxes]="true"        tagMode="single"
+        [tagMapper]="commaLabel"
+        (valueChange)="finishBy.set($event); onAnyChange()">
+        <ng-template kendoMultiSelectCheckAll>All</ng-template>
+      </kendo-multiselect>
     </div>
 
-    <div class="filter-field">
+    <!-- Date Type -->
+    <div class="ctrl">
       <label>Date Type</label>
-      <kendo-dropdownlist
+      <kendo-multiselect
         [data]="dateTypeList"
-        [ngModel]="dateType()"
-        (ngModelChange)="dateType.set($event); onAnyChange()"
-      ></kendo-dropdownlist>
+        [value]="dateType()"
+        [checkboxes]="true"        tagMode="single"
+        [tagMapper]="commaLabel"
+        (valueChange)="dateType.set($event); onAnyChange()">
+        <ng-template kendoMultiSelectCheckAll>All</ng-template>
+      </kendo-multiselect>
+    </div>
+  </div>
+
+  <!-- chips & sprint bar -->
+  <div class="doc-summary-bar">
+    <div class="doc-tags">
+      <span class="doc-tag green">Total Documents (1321)</span>
+      <span class="doc-tag gray">Backlogs (16)</span>
+      <span class="doc-tag gray">Forecast (199)</span>
+      <span class="doc-tag gray">Not Acknowledged (3)</span>
+      <span class="doc-tag gray">Step (5)</span>
+      <span class="doc-tag gray">Rulestream (3)</span>
+    </div>
+
+    <div class="sprint-bar">
+      <button class="sprint-prev">‹</button>
+
+      <button class="sprint-week today">
+        <span>Today</span><small>1 out of 1 are not completed</small>
+      </button>
+      <button class="sprint-week">
+        <span>FW 6 (This Week)</span><small>6 / 15 not completed</small>
+      </button>
+      <button class="sprint-week">
+        <span>FW 7 2025 (Next Week)</span><small>4 / 8 not completed</small>
+      </button>
+      <button class="sprint-week">
+        <span>FW 8 2025</span><small>4 / 8 not completed</small>
+      </button>
+
+      <button class="sprint-next">›</button>
     </div>
   </div>
 </div>

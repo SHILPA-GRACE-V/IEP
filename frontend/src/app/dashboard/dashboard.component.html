@@ -1,103 +1,119 @@
 <div class="dashboard-wrapper">
-  <!-- Top Bar -->
+  <!-- ────────── Top Bar ────────── -->
   <div class="top-bar">
     <div class="top-left">
-      <img src="../../assets/Logo-Dashboard.png" alt="IEP Logo" class="logo" />
-      <div class="app-info">
-        <h1>IEP</h1>
-        <p>Integrated Engineering Platform</p>
-      </div>
+      <img src="../../assets/notes_24dp_1F1F1F.png" class="hamburger" alt="Toggle sidebar">
+      <img src="../../assets/Logo-Dashboard.png"      class="logo"      alt="IEP Logo">
+      <div class="app-info"><h5>| OTR</h5></div>
     </div>
 
     <div class="top-right">
       <span class="nav-item" (click)="openPopup('request')">My Request</span>
       <span class="nav-item" (click)="openPopup('ticket')">Support Ticket</span>
+
       <span class="icon" (click)="openPopup('message')">
-  <img src="../../assets/comment.png" alt="Message Icon" />
-</span>
-<span class="icon" (click)="openPopup('notification')">
-  <img src="../../assets/active.png" alt="Notification Icon" />
-</span>
-<span class="icon" (click)="openPopup('help')">
-  <img src="../../assets/question.png" alt="Help Icon" />
-</span>
+        <img src="../../assets/comment.png">
+      </span>
+      <span class="icon" (click)="openPopup('notification')">
+        <img src="../../assets/active.png">
+      </span>
+      <span class="icon" (click)="openPopup('help')">
+        <img src="../../assets/question.png">
+      </span>
 
-
-      <!-- Profile -->
+      <!-- profile avatar + dropdown -->
       <div class="profile-icon" (click)="toggleProfileMenu()">
-        <img src="../../assets/profile.jpg" alt="Profile" />
-        <div class="dropdown" *ngIf="profileMenuVisible">
-          <div (click)="openPopup('profile')">My Profile</div>
-          <div (click)="logout()">Logout</div>
+        <img src="../../assets/profile.jpg" class="nav-avatar">
+
+        <div class="profile-menu" *ngIf="profileMenuVisible" (click)="$event.stopPropagation()">
+          <div class="user-header">
+            <img src="../../assets/profile.jpg" class="card-avatar">
+            <h4 class="fullname">Davis&nbsp;Johnson</h4>
+            <p ngNonBindable>david.johnson&#64;bakerhughes.com</p>
+          </div>
+
+          <button class="menu-item" (click)="openPopup('profile')">
+            <img src="../../assets/people_24dp_1F1F1F.png" class="row-icon">
+            <span>Change Dashboard</span>
+          </button>
+
+          <button class="menu-item" (click)="logout()">
+            <img src="../../assets/power-off.png" class="row-icon">
+            <span>Log out</span>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Body -->
+  <!-- ────────── Body (sidebar + main) ────────── -->
   <div class="dashboard-body">
     <aside class="sidebar">
       <app-contract-tree
-  [contractsData]="contractsData()"
-  (selectedProjects)="onProjectSelectionChange($event)">
-</app-contract-tree>
-
+        [contractsData]="contractList"
+        (emitSelectedProjectIds)="onProjectSelectionChange($event)">
+      </app-contract-tree>
     </aside>
 
     <main class="main-content">
       <app-operation-header></app-operation-header>
 
       <kendo-tabstrip (tabSelect)="onTabSelect($event)">
-  <kendo-tabstrip-tab
-    *ngFor="let tab of tabs"
-    [title]="tab">
-    <ng-template kendoTabContent>
-      <app-filter-activities (filtersChanged)="handleFilterChange($event)"></app-filter-activities>
-      <!-- Document Summary + Sprint Timeline -->
-<div class="document-summary-bar">
-  <div class="doc-tags">
-    <span class="doc-tag green">Total Documents (1321)</span>
-    <span class="doc-tag gray">Backlogs (16)</span>
-    <span class="doc-tag gray">Forecast (199)</span>
-    <span class="doc-tag gray">Not Acknowledged (3)</span>
-    <span class="doc-tag gray">Step (5)</span>
-    <span class="doc-tag gray">Rulestream (3)</span>
-  </div>
+        <kendo-tabstrip-tab
+          *ngFor="let tab of tabs; let i = index"
+          [title]="tab"
+          [selected]="i === 0">
 
-  <div class="sprint-bar">
-    <button class="sprint-week today">
-      <span>Today</span>
-      <small>1 out of 1 are not completed</small>
-    </button>
-    <button class="sprint-week">
-      <span>FW 6, 2025 (This Week)</span>
-      <small>6 out of 15 are not completed</small>
-    </button>
-    <button class="sprint-week">
-      <span>FW 7, 2025 (Next Week)</span>
-      <small>4 out of 8 are not completed</small>
-    </button>
-    <button class="sprint-week">
-      <span>FW 8, 2025</span>
-      <small>4 out of 8 are not completed</small>
-    </button>
-    <button class="sprint-next">></button>
-  </div>
-</div>
+          <ng-template kendoTabContent>
 
-      <app-activity-grid [data]="filteredData()"></app-activity-grid>
-    </ng-template>
-  </kendo-tabstrip-tab>
-</kendo-tabstrip>
+            <!-- Selected-projects one-liner -->
+            <div class="selected-projects"
+                 *ngIf="selectedTab() === 'ISPO' && selectedContracts().length">
+              <ul>
+                <li *ngFor="let pid of selectedContracts()">
+                  {{ getProjectName(pid) }}
+                </li>
+              </ul>
+            </div>
 
+            <!-- Primary-resource alert bar -->
+          <div class="resource-alert" *ngIf="showResourceAlert()">
+          <span class="alert-icon"></span>
+          <span class="alert-text">
+          You have received {{ resourceRequestsCount }}
+            primary&nbsp;resource&nbsp;re-assignment requests
+          </span>
+
+          <button class="view-link" (click)="openPopup('resourceRequests')">
+            View&nbsp;requests
+          </button>
+
+          <button class="close-alert" (click)="showResourceAlert.set(false)">×</button>
+          </div>
+
+
+
+            <!-- FILTER PANEL (chips & sprint are now inside it) -->
+            <app-filter-activities
+              (filtersChanged)="handleFilterChange($event)">
+            </app-filter-activities>
+
+            <!-- Results grid -->
+            <app-activity-grid [data]="filteredData()"></app-activity-grid>
+
+          </ng-template>
+        </kendo-tabstrip-tab>
+      </kendo-tabstrip>
     </main>
   </div>
 </div>
 
-<!-- Popup Modal -->
+<!-- Global popup -->
 <div class="popup-overlay" *ngIf="popup">
   <div class="popup-card">
-    <button class="close-btn" (click)="closePopup()">✖</button>
+    <button class="close-btn" (click)="closePopup()">
+      <img src="../../assets/close.png" alt="Close">
+    </button>
     <h2>{{ popup | titlecase }}</h2>
     <p>This is a popup window for {{ popup }}.</p>
   </div>

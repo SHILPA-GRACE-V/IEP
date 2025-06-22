@@ -1,18 +1,24 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { TabStripModule } from '@progress/kendo-angular-layout';
-import { ContractTreeComponent } from './sidebar/contract-tree/contract-tree.component';
-import { SearchBoxComponent } from './search/search-box/search-box.component';
-import { ActivityGridComponent } from './grid/activity-grid/activity-grid.component';
+/* ============================================================== *
+ *  DashboardComponent – fast, signal-driven, pure OnPush         *
+ * ============================================================== */
+import {
+  Component, OnInit, signal, computed, ChangeDetectionStrategy
+} from '@angular/core';
+import { Router }          from '@angular/router';
+import { CommonModule }    from '@angular/common';
+import { TabStripModule }  from '@progress/kendo-angular-layout';
+
+import { ContractTreeComponent     } from './sidebar/contract-tree/contract-tree.component';
+import { SearchBoxComponent        } from './search/search-box/search-box.component';
+import { ActivityGridComponent     } from './grid/activity-grid/activity-grid.component';
 import { FilterActivitiesComponent } from './filters/filter-activities/filter-activities.component';
-import { OperationHeaderComponent } from './operation-header/operation-header.component';
-import { DashboardDataService } from '../services/dashboard-data.service';
+import { OperationHeaderComponent  } from './operation-header/operation-header.component';
+import { DashboardDataService      } from '../services/dashboard-data.service';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [
+  selector      : 'app-dashboard',
+  standalone    : true,
+  imports       : [
     CommonModule,
     TabStripModule,
     ContractTreeComponent,
@@ -21,113 +27,136 @@ import { DashboardDataService } from '../services/dashboard-data.service';
     FilterActivitiesComponent,
     OperationHeaderComponent
   ],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  templateUrl   : './dashboard.component.html',
+  styleUrls     : ['./dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
-  tabs = ['ISPO', 'VDR', 'VDR Revision', 'OTD Trends', 'Engineering Productivity', 'Technical Alignment'];
-  selectedTab = signal(this.tabs[0]); // Default to 'ISPO'
 
-  rawData = signal<any[]>([]);
-  searchText = signal('');
-  viewAsFilter = signal('');
-  functionFilter = signal('');
-  documentTypeFilter = signal('');
-  activityStatusFilter = signal('');
-  activityTypeFilter = signal('');
-  finishByFilter = signal('');
-  dateTypeFilter = signal('');
-  selectedContracts = signal<string[]>([]);
-  contractsData = signal<any[]>([]);
+  /* ───────── tabs ───────── */
+  readonly tabs = [
+    'ISPO', 'VDR', 'VDR Revision',
+    'OTD Trends', 'Engineering Productivity', 'Technical Alignment'
+  ];
+  readonly selectedTab = signal('ISPO');
 
-  profileMenuVisible = false;
+  /* ───────── raw & helper data ───────── */
+  private readonly rawData = signal<any[]>([]);
+  readonly  selectedContracts = signal<string[]>([]);
+  contractList: any[] = [];
+
+  /* ───────── filter signals (empty = OFF) ───────── */
+  readonly viewAsFilter         = signal<string[]>([]);
+  readonly functionsFilter      = signal<string[]>([]);
+  readonly documentTypeFilter   = signal<string[]>([]);
+  readonly activityStatusFilter = signal<string[]>([]);
+  readonly activityTypeFilter   = signal<string[]>([]);
+  readonly finishByFilter       = signal<string[]>([]);
+  private  readonly _searchText = signal('');      // debounced
+  private searchDebounceHandle: any;
+
+  /* ───────── alert-bar state ───────── */
+  resourceRequestsCount = 3;
+  readonly showResourceAlert = signal(true);
+  dismissResourceAlert() { this.showResourceAlert.set(false); }
+
+  /* ───────── pop-ups ───────── */
   popup: string | null = null;
+  profileMenuVisible   = false;
 
-  constructor(private dataService: DashboardDataService, private router: Router) {}
+  /* ───────── ctor / init ───────── */
+  constructor(
+    private dataSvc: DashboardDataService,
+    private router : Router
+  ) {}
 
   ngOnInit(): void {
-  this.dataService.getDashboardData().subscribe(data => {
-    const flat = data.flatMap(project =>
-      project.subProjects.map((sub: any) => ({
-        ...sub,
-        projectId: project.projectId,
-        tab: 'ISPO' // hardcoded or dynamically assignable
-      }))
+    this.dataSvc.getDashboardData().subscribe(data => {
+      /* flatten level-1 + level-2 exactly once */
+      const flat = data.flatMap(p =>
+        p.subProjects.flatMap((l1: any) => {
+          const r1 = { ...l1, projectId: p.projectId, tab: 'ISPO' };
+          const r2 = (l1.subProjectsLevel2 ?? [])
+                     .map((l2: any) => ({ ...l2, projectId: p.projectId, tab: 'ISPO' }));
+          return [r1, ...r2];
+        })
+      );
+      this.rawData.set(flat);
+      this.contractList = data;
+    });
+  }
+
+  /* ───────── helpers ───────── */
+  private none    = (s: string[]) => s.length === 0;
+  private overlap = (sel: string[], val: string | string[] | undefined) =>
+    this.none(sel) || (Array.isArray(val) ? val : [val ?? '']).some(v => sel.includes(v));
+
+  /* ───────── memoised, instant filter ───────── */
+  private _cacheKey   = '';
+  private _cacheValue: any[] = [];
+
+  readonly filteredData = computed(() => {
+    /* ultra-cheap key (no JSON.stringify) */
+    const key = [
+      this.selectedTab(),
+
+      this.viewAsFilter().join('|'),
+      this.functionsFilter().join('|'),
+      this.documentTypeFilter().join('|'),
+      this.activityStatusFilter().join('|'),
+      this.activityTypeFilter().join('|'),
+      this.finishByFilter().join('|'),
+
+      this.selectedContracts().join('|'),
+      this._searchText()
+    ].join('¶');                    // a token unlikely in real data
+
+    if (key === this._cacheKey) { return this._cacheValue; }
+    this._cacheKey = key;
+
+    return this._cacheValue = this.rawData().filter(r =>
+         r.tab === this.selectedTab()                                  &&
+         this.overlap(this.viewAsFilter(),         r.viewAs)           &&
+         this.overlap(this.documentTypeFilter(),   r.documentType)     &&
+         this.overlap(this.activityStatusFilter(), r.activityStatus)   &&
+         this.overlap(this.activityTypeFilter(),   r.activityType)     &&
+         this.overlap(this.finishByFilter(),       r.finishBy)         &&
+         this.overlap(this.functionsFilter(),      r.functions)        &&
+         this.selectedContracts().includes(r.projectId)                &&
+         ( !this._searchText() || Object.values(r).some(v =>
+             String(v).toLowerCase().includes(this._searchText().toLowerCase()) ))
     );
-    this.rawData.set(flat);
-
-    const groupedContracts = this.groupByProjectId(data);
-    this.contractsData.set(groupedContracts);
   });
-}
 
+  /* ───────── child callbacks ───────── */
+  onProjectSelectionChange = (ids: string[]) => this.selectedContracts.set(ids);
+  onTabSelect              = (e: any)        => this.selectedTab.set(this.tabs[e.index]);
 
-  private groupByProjectId(data: any[]): any[] {
-  return data.map(project => ({
-    key: project.projectId,
-    name: `${project.projectId} - ${project.subProjects?.[0]?.activityName || ' '}`,
-    icon: 'folder',
-    children: project.subProjects?.map((activity: any) => ({
-      key: activity.activityId,
-      name: activity.activityName,
-      icon: 'file'
-    })) || []
-  }));
-}
-onProjectSelectionChange(selectedProjectIds: string[]) {
-  this.selectedContracts.set(selectedProjectIds);
-}
-
-updateSelectedContracts(projectIds: string[]) {
-  this.selectedContracts.set(projectIds);
-}
-
-  onTabSelect(e: any) {
-    this.selectedTab.set(this.tabs[e.index]);
+  /** ⇢ <app-filter-activities> */
+  handleFilterChange(f: any) {
+    this.viewAsFilter.set        (f.viewAs);
+    this.functionsFilter.set     (f.functions);
+    this.documentTypeFilter.set  (f.documentType);
+    this.activityStatusFilter.set(f.activityStatus);
+    this.activityTypeFilter.set  (f.activityType);
+    this.finishByFilter.set      (f.finishBy);
   }
 
-  filteredData = computed(() => {
-  return this.rawData().filter(row =>
-    row.tab === this.selectedTab() &&
-    (!this.viewAsFilter() || row.viewAs === this.viewAsFilter()) &&
-    (!this.functionFilter() || row.functions.includes(this.functionFilter())) &&
-    (!this.documentTypeFilter() || row.documentType === this.documentTypeFilter()) &&
-    (!this.activityStatusFilter() || row.activityStatus === this.activityStatusFilter()) &&
-    (!this.activityTypeFilter() || row.activityType === this.activityTypeFilter()) &&
-    (!this.finishByFilter() || row.finishBy === this.finishByFilter()) &&
-    (this.selectedContracts().length === 0 || this.selectedContracts().includes(row.projectId)) &&
-    (!this.searchText() || Object.values(row).some(val =>
-      String(val).toLowerCase().includes(this.searchText().toLowerCase())))
-  );
-});
-
-
-
-  handleFilterChange(filters: any) {
-    this.viewAsFilter.set(filters.viewAs);
-    this.functionFilter.set(filters.functions);
-    this.documentTypeFilter.set(filters.documentType);
-    this.activityStatusFilter.set(filters.activityStatus);
-    this.activityTypeFilter.set(filters.activityType);
-    this.finishByFilter.set(filters.finishBy);
-    this.dateTypeFilter.set(filters.dateType);
+  /** ⇢ <app-search-box> – debounce @ 250 ms */
+  handleSearchInput(txt: string) {
+    clearTimeout(this.searchDebounceHandle);
+    this.searchDebounceHandle = setTimeout(() => this._searchText.set(txt), 250);
   }
 
-  toggleProfileMenu() {
-    this.profileMenuVisible = !this.profileMenuVisible;
+  /* ───────── misc helpers ───────── */
+  getProjectName(id: string) {
+    const p = this.contractList.find(prj => prj.projectId === id);
+    return p ? `${p.projectId} – ${p.treePath}` : id;
   }
 
-  logout() {
-    this.router.navigate(['/login']);
-  }
-
-  openPopup(type: string) {
-    this.popup = type;
-    this.profileMenuVisible = false;
-  }
-
-  closePopup() {
-    this.popup = null;
-    this.router.navigate(['/dashboard']);
-  }
+  /* ───────── pop-ups / avatar menu ───────── */
+  openPopup(t: string) { this.popup = t; this.profileMenuVisible = false; }
+  closePopup()         { this.popup = null; this.router.navigate(['/dashboard']); }
+  toggleProfileMenu()  { this.profileMenuVisible = !this.profileMenuVisible; }
+  logout()             { this.router.navigate(['/login']); }
 }

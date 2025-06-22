@@ -1,1 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* === Global typography ================================================= */
+
+:root {
+  --font-ui: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+html, body {
+  font-family: var(--font-ui);
+}
+
+/* ensure form controls & buttons inherit the same font */
+button, input, select, textarea {
+  font: inherit;
+}

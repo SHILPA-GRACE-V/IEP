@@ -1,111 +1,102 @@
+/* =================================================================== */
+/*  CONTRACT TREE SIDEBAR                                              */
+/* =================================================================== */
+
+.contract-layout { display:flex; height:100vh; }
+
+/* ---------- vertical quick-nav ----------------------------------- */
+.vertical-sidebar {
+  width:50px; background:#fff; border-right:1px solid #ddd;
+  display:flex; flex-direction:column; align-items:center; padding-top:12px;
+
+  .sidebar-icon {
+    margin:10px 0; padding:6px; border-radius:6px; cursor:pointer;
+    img{width:20px;height:20px;}
+    &.active{background:#def4ea; border-left:4px solid #3fa9f5;}
+    &:hover{background:#f0f0f0;}
+  }
+}
+
+/* ---------- collapsible sidebar ---------------------------------- */
 .sidebar-container {
-  background: #fff;
-  font-family: 'Segoe UI', sans-serif;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  width:280px; background:#fff; border-right:1px solid #e0e0e0;
+  display:flex; flex-direction:column; transition:width .3s;
 
-  .header {
-    display: flex;
-    align-items: center;
+  &.collapsed{ width:0; .header,.content-wrapper{display:none;} }
 
-    h3 {
-      font-size: 14px;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .arrow {
-      cursor: pointer;
-      margin-right: 8px;
-    }
+  .header{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; border-bottom:1px solid #eee;
+    h3{margin:0;font:600 16px 'Roboto',sans-serif;}
+    img{width:16px;height:16px;cursor:pointer;}
   }
 
-  .content-wrapper {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow: hidden; // Prevent outer scroll
-  }
+  .content-wrapper{flex-grow:1;padding:12px 14px 0;display:flex;flex-direction:column;overflow:hidden;}
 
-  .tab-buttons {
-    display: flex;
-    margin: 1rem 0;
-
-    button {
-      flex: 1;
-      padding: 6px;
-      border: none;
-      background: #f0f0f0;
-      font-size: 12px;
-      cursor: pointer;
-      border-radius: 4px;
-      margin-right: 4px;
-
-      &.active {
-        background: #004d40;
-        color: white;
-        font-weight: bold;
-      }
+  /* tab pills */
+  .tab-buttons{
+    display:flex; background:#b6aeae; border-radius:6px; padding:2px; margin-bottom:8px;
+    button{
+      flex:1 1 0; display:flex; align-items:center; justify-content:center;
+      border:none; background:transparent; color:#333;
+      padding:6px 8px;            /* wider for long text */
+      border-radius:4px; font:500 12px 'Roboto',sans-serif; cursor:pointer;
+      transition:background .2s,border .2s;
+      &.active{background:#fff;border:1px solid #fff;color:#000;}
+      &:not(:last-child){margin-right:4px;}
     }
   }
 
-  .search-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    input {
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-
-    .advanced-btn {
-      background: #00745e;
-      color: white;
-      padding: 6px;
-      border: none;
-      border-radius: 4px;
-      font-size: 13px;
-      cursor: pointer;
+  /* search + advanced */
+  .search-section{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;
+    .search-input-wrapper input{width:90%;padding:6px 14px;border:1px solid #ccc;border-radius:20px;font-size:13px;}
+    .advanced-btn{
+      background:#168f6a;color:#fff;border:0;padding:8px 16px;border-radius:4px;
+      font:500 13px 'Roboto',sans-serif;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;column-gap:6px;
+      .arrow{width:12px;height:12px;filter:brightness(0) invert(1);}
+      .arrow.down{display:none;}
+      &.expanded{.arrow.right{display:none;}.arrow.down{display:block;}}
     }
   }
+  .advanced-search-panel{background:#f3f3f3;padding:8px;border-radius:4px;font-size:13px;margin-top:6px;}
 
-  .result-count {
-    font-size: 12px;
-    color: #666;
-    margin-top: 0.5rem;
+  /* current projects header */
+  .project-header{
+    display:flex;align-items:center;cursor:pointer;padding:8px 0;margin:10px 0;
+    font:600 14px 'Roboto',sans-serif;color:#333;border-top:1px solid #eee;border-bottom:1px solid #eee;
+    input{margin-right:6px;} .arrow img{width:12px;height:12px;margin-right:6px;}
   }
 
-  .current-header {
-    font-weight: 600;
-    font-size: 14px;
-    margin: 0.75rem 0 0.25rem;
-    cursor: pointer;
+  /* tree pane */
+  .tree-list-scroll{flex-grow:1;overflow-y:auto;overflow-x:hidden;padding-right:4px;margin-top:4px;}
+  .result-count{font-size:12px;margin:6px 0;color:#666;}
 
-    .arrow {
-      margin-right: 6px;
-      font-size: 14px;
-    }
+  /* level-0 project */
+  .tree-project{
+    display:flex;align-items:center;padding:4px 6px;
+    font:500 14px 'Roboto',sans-serif;
+    input{margin-right:6px;} .toggle-arrow{width:12px;height:12px;margin-right:8px;}
+    .star{margin-left:auto;img{width:16px;height:16px;cursor:pointer;}}
   }
 
-  .tree-scroll-wrapper {
-    overflow-y: auto;
-    flex: 1;
-    min-height: 0;
-    padding-right: 5px;
-  }
 
-  .tree-icon {
-    margin-right: 6px;
-  }
+/* universal size for every chevron -------------------------------- */
+.toggle-arrow {
+  width: 12px;
+  height: 12px;
+}
 
-  .star {
-    float: right;
-    margin-left: 8px;
-    color: #ffb800;
-    cursor: pointer;
+/* optional – a tiny gap in the level-1 rows */
+.row-item .toggle-arrow { margin-right: 6px; }
+
+
+  /* shared nested row */
+  .row-item{display:flex;align-items:center;gap:6px;margin:4px 0;font:13px 'Roboto',sans-serif;}
+
+  /* nested containers */
+  .tree-activity{margin-left:22px;padding-left:10px;
+    &.level2{margin-left:22px;display:block;}
+    &.level3{margin-left:22px;display:block;}
   }
 }
