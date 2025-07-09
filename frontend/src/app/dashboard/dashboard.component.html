@@ -1,0 +1,107 @@
+<div class="dashboard-wrapper">
+  <!-- ────────── Top Bar ────────── -->
+  <div class="top-bar">
+    <div class="top-left">
+      <img src="../../assets/notes_24dp_1F1F1F.png" class="hamburger" alt="Toggle sidebar">
+      <img src="../../assets/Logo-Dashboard.png" class="logo" alt="IEP Logo">
+      <div class="app-info"><h5>| OTR</h5></div>
+    </div>
+
+    <div class="top-right">
+      <span class="nav-item" (click)="openPopup('request')">My Request</span>
+      <span class="nav-item" (click)="openPopup('ticket')">Support Ticket</span>
+      <span class="material-symbols-outlined icon">chat_bubble</span>
+      <span class="material-symbols-outlined icon">help</span>
+      <span class="material-symbols-outlined icon notification-container">
+        notifications
+        <div class="badge">1</div>
+      </span>
+
+      <div class="profile-icon" (click)="toggleProfileMenu()">
+        <img src="../../assets/profile.jpg" class="nav-avatar" />
+        <div class="profile-menu" *ngIf="profileMenuVisible" (click)="$event.stopPropagation()">
+          <div class="user-header">
+            <img src="../../assets/profile.jpg" class="card-avatar" />
+            <h4 class="fullname">Davis&nbsp;Johnson</h4>
+            <p>david.johnson&#64;bakerhughes.com</p>
+          </div>
+
+          <button class="menu-item" (click)="openPopup('profile')">
+            <img src="../../assets/people_24dp_1F1F1F.png" class="row-icon" />
+            <span>Change Dashboard</span>
+          </button>
+
+          <button class="menu-item" (click)="logout()">
+            <img src="../../assets/power-off.png" class="row-icon" />
+            <span>Log out</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────────── Body (sidebar + main) ────────── -->
+  <div class="dashboard-body">
+    <aside class="sidebar">
+      <app-contract-tree
+  [contractsData]="contractList"
+  (emitSelectedProjectIds)="onProjectSelectionChange($event)">
+</app-contract-tree>
+
+    </aside>
+
+    <main class="main-content">
+      <app-operation-header></app-operation-header>
+
+      <kendo-tabstrip (tabSelect)="onTabSelect($event)">
+        <kendo-tabstrip-tab *ngFor="let tab of tabs; let i = index"
+                            [title]="tab"
+                            [selected]="i === 0">
+          <ng-template kendoTabContent>
+
+            <!-- Selected-projects one-liner -->
+            <div class="selected-projects"
+                 *ngIf="selectedTab() === 'ISPO' && filteredData().length">
+              <ul>
+                <li *ngFor="let row of filteredData()">
+                  {{ row.projectId }} – {{ row.activityName }}
+                </li>
+              </ul>
+            </div>
+
+            <!-- Resource alert -->
+            <div class="resource-alert" *ngIf="showResourceAlert()">
+              <span class="material-symbols-outlined">notification_important</span>
+              <div class="alert-content">
+                <span class="alert-text">
+                  You have received {{ resourceRequestsCount }}
+                  primary&nbsp;resource&nbsp;re-assignment requests.
+                </span>
+                <button class="view-link" (click)="openPopup('resourceRequests')">
+                  View&nbsp;requests
+                </button>
+              </div>
+              <button class="close-alert" (click)="showResourceAlert.set(false)">×</button>
+            </div>
+
+            <!-- Filters and Grid -->
+            <app-filter-activities (filtersChanged)="handleFilterChange($event)">
+            </app-filter-activities>
+            <app-activity-grid [data]="filteredData()"></app-activity-grid>
+          </ng-template>
+        </kendo-tabstrip-tab>
+      </kendo-tabstrip>
+    </main>
+  </div>
+</div>
+
+<!-- Popup -->
+<div class="popup-overlay" *ngIf="popup()">
+  <div class="popup-card">
+    <button class="close-btn" (click)="closePopup()">
+      <img src="../../assets/close.png" alt="Close" />
+    </button>
+    <h2>{{ popup() | titlecase }}</h2>
+    <p>This is a popup window for {{ popup() }}.</p>
+  </div>
+</div>

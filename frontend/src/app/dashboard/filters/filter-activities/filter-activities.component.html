@@ -1,0 +1,71 @@
+<div class="filter-panel">
+  <!-- Header -->
+  <div class="panel-header">
+    <h4>Filter Activities</h4>
+    <div class="panel-actions">
+      <button class="link-btn" (click)="clearFilters()">Clear Filter</button>
+      <span class="material-symbols-outlined">more_horiz</span>
+      <button class="collapse-btn" (click)="toggleExpanded()">
+        <span class="material-symbols-outlined" [class.rotated]="!isExpanded()">keyboard_arrow_down</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Controls -->
+  <div class="controls-grid" *ngIf="isExpanded()">
+    <div
+      class="ctrl"
+      *ngFor="let filter of [
+        { label: 'View As', list: viewAsList, value: viewAs, set: viewAs.set },
+        { label: 'Functions', list: functionsList, value: functions, set: functions.set },
+        { label: 'Document Type', list: documentTypeList, value: documentType, set: documentType.set },
+        { label: 'Activity Status', list: statusList, value: status, set: status.set },
+        { label: 'Activity Type', list: activityTypeList, value: activityType, set: activityType.set },
+        { label: 'Finish By', list: finishByList, value: finishBy, set: finishBy.set },
+        { label: 'Date Type', list: dateTypeList, value: dateType, set: dateType.set }
+      ]"
+    >
+      <label>{{ filter.label }}</label>
+      <kendo-dropdownlist
+        [data]="filter.list"
+        [value]="filter.value()"
+        textField="text"
+        valueField="value"
+        (valueChange)="filter.set($event); onAnyChange()"
+      >
+      </kendo-dropdownlist>
+    </div>
+  </div>
+
+  <!-- Tags & Summary -->
+  <div class="doc-summary-bar" *ngIf="isExpanded()">
+    <div class="doc-tags">
+      <span class="doc-tag green">Total Documents (1321)</span>
+      <span class="doc-tag gray">Backlogs (16)</span>
+      <span class="doc-tag gray">Forecast (199)</span>
+      <span class="doc-tag gray">Not Acknowledged (3)</span>
+      <span class="doc-tag gray">Step (5)</span>
+      <span class="doc-tag gray">Rulestream (3)</span>
+    </div>
+
+    <div class="sprint-bar">
+      <button class="sprint-arrow">
+        <span class="material-symbols-outlined">keyboard_arrow_left</span>
+      </button>
+      <button class="sprint-week today">
+        <span>Today</span><small>1 out of 1 are not completed</small>
+      </button>
+      <button class="sprint-week yellow">
+        <span>FW 6, 2025 (This Week)</span><small>6 out of 15 are not completed</small>
+      </button>
+      <button class="sprint-week">
+        <span>FW 7, 2025 (Next Week)</span><small>4 out of 8 are not completed</small>
+      </button>
+      <button class="sprint-week">
+        <span>FW 8, 2025</span><small>4 out of 8 are not completed</small>
+      </button>
+      <button class="sprint-arrow">
+        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+      </button>
+    </div>
+  </div>

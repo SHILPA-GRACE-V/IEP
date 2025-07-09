@@ -1,0 +1,30 @@
+<div class="operation-container">
+  <div class="operation-title">Operation</div>
+
+  <div class="operation-info">
+    <span class="uploaded">
+      Last uploaded: <a href="#">04 Feb 2025</a>
+    </span>
+
+    <span class="divider">|</span>
+    <span class="ytd">YTD</span>
+
+    <!-- circular progress ------------------------------------------------ -->
+    <div class="circular-wrapper" aria-label="Completion 71 %">
+      <svg viewBox="0 0 36 36" class="circular-chart">
+        <circle class="bg" cx="18" cy="18" r="16"></circle>
+        <!-- stroke-dasharray = 71 100   ( = 71 % ) -->
+        <circle
+          class="fg"
+          cx="18"
+          cy="18"
+          r="16"
+          stroke-dasharray="71 100">
+        </circle>
+      </svg>
+      <span class="value">71%</span>
+    </div>
+
+    <button class="do-vs-buy">Do&nbsp;vs&nbsp;Buy</button>
+  </div>
+</div>

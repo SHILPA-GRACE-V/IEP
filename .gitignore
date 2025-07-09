@@ -1,0 +1,5 @@
+nodemodule/
+dist/
+    .angular/
+    .env/
+    .DS_STORE/

@@ -1,0 +1,442 @@
+[
+  {
+    "projectId": "PRJ001",
+    "treePath": "Project 1 – Greenfield Build",
+    "subProjects": [
+      {
+        "activityId": "ACT11",
+        "activityName": "Main Electrical",
+        "primaryResource": "Electrical Team",
+        "earlyDate": "2025-02-01",
+        "viewAs": "Group",
+        "functions": "ENG, QA",
+        "documentType": "Internal",
+        "activityStatus": "In Progress",
+        "activityType": "560",
+        "finishBy": "Early Finish",
+        "treePath": "Main Electrical",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT11_A",
+            "activityName": "Cable Trays",
+            "primaryResource": "Electrical Crew A",
+            "earlyDate": "2025-02-05",
+            "viewAs": "Individual",
+            "functions": "ENG",
+            "documentType": "Step",
+            "activityStatus": "Draft",
+            "activityType": "560",
+            "finishBy": "Early Finish",
+            "treePath": "Main Electrical › Cable Trays"
+          },
+          {
+            "activityId": "ACT11_B",
+            "activityName": "Switchgear Install",
+            "primaryResource": "Electrical Crew B",
+            "earlyDate": "2025-02-07",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "External",
+            "activityStatus": "Draft",
+            "activityType": "560",
+            "finishBy": "Late Finish",
+            "treePath": "Main Electrical › Switchgear Install"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT12",
+        "activityName": "HVAC Rough-In",
+        "primaryResource": "Mechanical Team",
+        "earlyDate": "2025-02-02",
+        "viewAs": "Group",
+        "functions": "TECH",
+        "documentType": "Step",
+        "activityStatus": "Not Started",
+        "activityType": "530",
+        "finishBy": "Late Finish",
+        "treePath": "HVAC Rough-In",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT12_A",
+            "activityName": "Duct Fabrication",
+            "primaryResource": "Mech Crew A",
+            "earlyDate": "2025-02-06",
+            "viewAs": "Individual",
+            "functions": "TECH",
+            "documentType": "Internal",
+            "activityStatus": "Draft",
+            "activityType": "530",
+            "finishBy": "On Time",
+            "treePath": "HVAC Rough-In › Duct Fabrication"
+          },
+          {
+            "activityId": "ACT12_B",
+            "activityName": "Unit Placement",
+            "primaryResource": "Mech Crew B",
+            "earlyDate": "2025-02-08",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "External",
+            "activityStatus": "Draft",
+            "activityType": "530",
+            "finishBy": "Early Finish",
+            "treePath": "HVAC Rough-In › Unit Placement"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "projectId": "PRJ002",
+    "treePath": "Project 2 – Retrofit Upgrade",
+    "subProjects": [
+      {
+        "activityId": "ACT21",
+        "activityName": "Structural Steel",
+        "primaryResource": "Civils Team",
+        "earlyDate": "2025-03-01",
+        "viewAs": "Group",
+        "functions": "ENG",
+        "documentType": "Internal",
+        "activityStatus": "In Progress",
+        "activityType": "580",
+        "finishBy": "On Time",
+        "treePath": "Structural Steel",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT21_A",
+            "activityName": "Column Erection",
+            "primaryResource": "Steel Crew A",
+            "earlyDate": "2025-03-05",
+            "viewAs": "Individual",
+            "functions": "ENG",
+            "documentType": "Step",
+            "activityStatus": "Draft",
+            "activityType": "580",
+            "finishBy": "Early Finish",
+            "treePath": "Structural Steel › Column Erection"
+          },
+          {
+            "activityId": "ACT21_B",
+            "activityName": "Beam Alignment",
+            "primaryResource": "Steel Crew B",
+            "earlyDate": "2025-03-06",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "External",
+            "activityStatus": "Draft",
+            "activityType": "580",
+            "finishBy": "Late Finish",
+            "treePath": "Structural Steel › Beam Alignment"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT22",
+        "activityName": "Fire-Protection Update",
+        "primaryResource": "Safety Team",
+        "earlyDate": "2025-03-02",
+        "viewAs": "Group",
+        "functions": "TECH",
+        "documentType": "External",
+        "activityStatus": "Not Started",
+        "activityType": "520",
+        "finishBy": "On Time",
+        "treePath": "Fire-Protection Update",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT22_A",
+            "activityName": "Sprinkler Layout",
+            "primaryResource": "Safety Crew A",
+            "earlyDate": "2025-03-07",
+            "viewAs": "Individual",
+            "functions": "ENG",
+            "documentType": "Internal",
+            "activityStatus": "Draft",
+            "activityType": "520",
+            "finishBy": "Early Finish",
+            "treePath": "Fire-Protection Update › Sprinkler Layout"
+          },
+          {
+            "activityId": "ACT22_B",
+            "activityName": "Pump Test",
+            "primaryResource": "Safety Crew B",
+            "earlyDate": "2025-03-09",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "Step",
+            "activityStatus": "Draft",
+            "activityType": "520",
+            "finishBy": "Late Finish",
+            "treePath": "Fire-Protection Update › Pump Test"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "projectId": "PRJ003",
+    "treePath": "Project 3 – Offshore Module",
+    "subProjects": [
+      {
+        "activityId": "ACT31",
+        "activityName": "Deck Fabrication",
+        "primaryResource": "Fabrication Team",
+        "earlyDate": "2025-04-01",
+        "viewAs": "Group",
+        "functions": "ENG, QA",
+        "documentType": "Step",
+        "activityStatus": "In Progress",
+        "activityType": "570",
+        "finishBy": "Early Finish",
+        "treePath": "Deck Fabrication",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT31_A",
+            "activityName": "Plate Cutting",
+            "primaryResource": "Fab Crew A",
+            "earlyDate": "2025-04-03",
+            "viewAs": "Individual",
+            "functions": "ENG",
+            "documentType": "Internal",
+            "activityStatus": "Draft",
+            "activityType": "570",
+            "finishBy": "On Time",
+            "treePath": "Deck Fabrication › Plate Cutting"
+          },
+          {
+            "activityId": "ACT31_B",
+            "activityName": "Weld Inspection",
+            "primaryResource": "Fab QA",
+            "earlyDate": "2025-04-04",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "External",
+            "activityStatus": "Draft",
+            "activityType": "570",
+            "finishBy": "Late Finish",
+            "treePath": "Deck Fabrication › Weld Inspection"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT32",
+        "activityName": "Piping Prefab",
+        "primaryResource": "Piping Team",
+        "earlyDate": "2025-04-02",
+        "viewAs": "Group",
+        "functions": "TECH",
+        "documentType": "Internal",
+        "activityStatus": "Not Started",
+        "activityType": "550",
+        "finishBy": "Late Finish",
+        "treePath": "Piping Prefab",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT32_A",
+            "activityName": "Spool Welding",
+            "primaryResource": "Pipe Crew A",
+            "earlyDate": "2025-04-06",
+            "viewAs": "Individual",
+            "functions": "TECH",
+            "documentType": "Step",
+            "activityStatus": "Draft",
+            "activityType": "550",
+            "finishBy": "Early Finish",
+            "treePath": "Piping Prefab › Spool Welding"
+          },
+          {
+            "activityId": "ACT32_B",
+            "activityName": "Hydrotest",
+            "primaryResource": "Pipe QA",
+            "earlyDate": "2025-04-08",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "External",
+            "activityStatus": "Draft",
+            "activityType": "550",
+            "finishBy": "Late Finish",
+            "treePath": "Piping Prefab › Hydrotest"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "projectId": "PRJ004",
+    "treePath": "Project 4 – Data-Center Expansion",
+    "subProjects": [
+      {
+        "activityId": "ACT41",
+        "activityName": "Raised Floor Install",
+        "primaryResource": "Civil Team",
+        "earlyDate": "2025-05-10",
+        "viewAs": "Group",
+        "functions": "ENG",
+        "documentType": "Internal",
+        "activityStatus": "In Progress",
+        "activityType": "520",
+        "finishBy": "Early Finish",
+        "treePath": "Raised Floor Install",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT41_A",
+            "activityName": "Sub-floor Leveling",
+            "primaryResource": "Civil Crew A",
+            "earlyDate": "2025-05-12",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "Step",
+            "activityStatus": "Draft",
+            "activityType": "520",
+            "finishBy": "On Time",
+            "treePath": "Raised Floor Install › Sub-floor Leveling"
+          },
+          {
+            "activityId": "ACT41_B",
+            "activityName": "Tile Placement",
+            "primaryResource": "Civil Crew B",
+            "earlyDate": "2025-05-14",
+            "viewAs": "Individual",
+            "functions": "ENG",
+            "documentType": "Internal",
+            "activityStatus": "Draft",
+            "activityType": "520",
+            "finishBy": "Early Finish",
+            "treePath": "Raised Floor Install › Tile Placement"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT42",
+        "activityName": "CRAC Units Setup",
+        "primaryResource": "HVAC Team",
+        "earlyDate": "2025-05-11",
+        "viewAs": "Group",
+        "functions": "TECH",
+        "documentType": "External",
+        "activityStatus": "Not Started",
+        "activityType": "540",
+        "finishBy": "On Time",
+        "treePath": "CRAC Units Setup",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT42_A",
+            "activityName": "Rigging & Positioning",
+            "primaryResource": "HVAC Crew A",
+            "earlyDate": "2025-05-15",
+            "viewAs": "Individual",
+            "functions": "TECH",
+            "documentType": "Step",
+            "activityStatus": "Draft",
+            "activityType": "540",
+            "finishBy": "Early Finish",
+            "treePath": "CRAC Units Setup › Rigging & Positioning"
+          },
+          {
+            "activityId": "ACT42_B",
+            "activityName": "Commissioning",
+            "primaryResource": "HVAC Crew B",
+            "earlyDate": "2025-05-17",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "External",
+            "activityStatus": "Draft",
+            "activityType": "540",
+            "finishBy": "Late Finish",
+            "treePath": "CRAC Units Setup › Commissioning"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "projectId": "PRJ005",
+    "treePath": "Project 5 – Solar Farm Phase-2",
+    "subProjects": [
+      {
+        "activityId": "ACT51",
+        "activityName": "Panel Rack Foundations",
+        "primaryResource": "Civil Works",
+        "earlyDate": "2025-06-01",
+        "viewAs": "Group",
+        "functions": "ENG, QA",
+        "documentType": "Internal",
+        "activityStatus": "Not Started",
+        "activityType": "530",
+        "finishBy": "Early Finish",
+        "treePath": "Panel Rack Foundations",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT51_A",
+            "activityName": "Excavation",
+            "primaryResource": "Civil Crew C",
+            "earlyDate": "2025-06-03",
+            "viewAs": "Individual",
+            "functions": "ENG",
+            "documentType": "Step",
+            "activityStatus": "Draft",
+            "activityType": "530",
+            "finishBy": "Early Finish",
+            "treePath": "Panel Rack Foundations › Excavation"
+          },
+          {
+            "activityId": "ACT51_B",
+            "activityName": "Concrete Pour",
+            "primaryResource": "Civil Crew D",
+            "earlyDate": "2025-06-05",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "External",
+            "activityStatus": "Draft",
+            "activityType": "530",
+            "finishBy": "On Time",
+            "treePath": "Panel Rack Foundations › Concrete Pour"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT52",
+        "activityName": "Inverter Station Wiring",
+        "primaryResource": "Electrical Team",
+        "earlyDate": "2025-06-02",
+        "viewAs": "Group",
+        "functions": "TECH",
+        "documentType": "External",
+        "activityStatus": "Not Started",
+        "activityType": "560",
+        "finishBy": "Late Finish",
+        "treePath": "Inverter Station Wiring",
+        "subProjectsLevel2": [
+          {
+            "activityId": "ACT52_A",
+            "activityName": "Cable Laying",
+            "primaryResource": "Elec Crew C",
+            "earlyDate": "2025-06-06",
+            "viewAs": "Individual",
+            "functions": "TECH",
+            "documentType": "Step",
+            "activityStatus": "Draft",
+            "activityType": "560",
+            "finishBy": "On Time",
+            "treePath": "Inverter Station Wiring › Cable Laying"
+          },
+          {
+            "activityId": "ACT52_B",
+            "activityName": "Termination & Testing",
+            "primaryResource": "Elec Crew D",
+            "earlyDate": "2025-06-08",
+            "viewAs": "Individual",
+            "functions": "QA",
+            "documentType": "Internal",
+            "activityStatus": "Draft",
+            "activityType": "560",
+            "finishBy": "Late Finish",
+            "treePath": "Inverter Station Wiring › Termination & Testing"
+          }
+        ]
+      }
+    ]
+  }
+]

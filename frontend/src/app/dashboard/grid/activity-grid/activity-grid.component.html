@@ -1,0 +1,96 @@
+<div class="activity-grid-wrapper" [class.expanded]="gridExpanded">
+  <!-- Header -->
+  <div class="activity-header">
+    <div class="title-box">
+      <span class="title">Activities</span>
+      <span class="count">Result: {{ pagedData.total }} Activities</span>
+    </div>
+
+    <div class="actions">
+      <label class="search-wrapper">
+        <input type="text" [(ngModel)]="globalSearch" placeholder="Search in all column" />
+        <img src="../../../../assets/search.png" class="search-icon" />
+      </label>
+
+      <button class="icon-btn" (click)="toggleExpand()" [title]="gridExpanded ? 'Close' : 'Expand'">
+        <span class="material-symbols-outlined">
+        {{ gridExpanded ? 'close' : 'fullscreen_exit' }}
+        </span>
+      </button>
+
+
+      <button class="icon-btn" (click)="openSettings()" title="Settings">
+        <img src="../../../../assets/setting.png" alt="Settings" />
+      </button>
+
+      <div class="menu-wrapper">
+        <button class="icon-btn" (click)="toggleMenu($event)" title="More">
+          <span class="material-symbols-outlined" style="font-size: 18px;">more_vert</span>
+        </button>
+        <ul class="menu" *ngIf="showMenu" (click)="$event.stopPropagation()">
+          <li><a (click)="exportCSV()">Export to CSV</a></li>
+          <li><a (click)="printGrid()">Print</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-banner" *ngIf="pagedData.total === 0">
+    <span>No Data is available</span>
+  </div>
+
+  <!-- Grid -->
+  <kendo-grid
+    *ngIf="pagedData.total"
+    [data]="pagedData"
+    [height]="gridExpanded ? 560 : 420"
+    [pageSize]="pageSize"
+    [skip]="skip"
+    [pageable]="pagerSettings"
+    [sortable]="true"
+    [sort]="sort"
+    (sortChange)="onSortChange($event)"
+    scrollable="none"
+    [rowHeight]="36"
+    (pageChange)="pageChange($event)"
+  >
+    <ng-container *ngFor="let column of ['projectId', 'activityId', 'activityName', 'primaryResource', 'earlyDate']">
+      <kendo-grid-column
+        [field]="column"
+        [width]="column === 'activityName' ? 250 : column === 'primaryResource' ? 200 : 160"
+        [sortable]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <div class="hdr-wrap">
+            <span (click)="onSortClick(column)">
+              {{ column === 'projectId' ? 'Project ID' :
+                 column === 'activityId' ? 'Activity ID' :
+                 column === 'activityName' ? 'Activity Name' :
+                 column === 'primaryResource' ? 'Primary Resource' :
+                 column === 'earlyDate' ? 'Early Date' : column }}
+            </span>
+            <span class="material-symbols-outlined hdr-icon"
+                  (click)="toggleColumnFilterMenu(column, $event)">more_vert</span>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+    </ng-container>
+  </kendo-grid>
+
+  <!-- Floating Filter Menu -->
+  <div class="floating-filter-menu" *ngIf="showColumnFilter"
+     [ngStyle]="{ top: filterMenuPosition.top + 'px', left: filterMenuPosition.left + 'px' }"
+     (click)="$event.stopPropagation()">
+  <ul class="column-filter-menu">
+    <li (click)="clearFilter(showColumnFilter!)">Clear All</li>
+    <li *ngFor="let value of getUniqueValues(showColumnFilter!)">
+      <label class="filter-checkbox">
+        <input type="checkbox"
+               [checked]="isValueSelected(showColumnFilter!, value)"
+               (change)="toggleFilterValue(showColumnFilter!, value)" />
+        {{ value }}
+      </label>
+    </li>
+  </ul>
+</div>
+
+</div>

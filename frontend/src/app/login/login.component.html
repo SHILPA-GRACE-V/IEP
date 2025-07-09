@@ -1,0 +1,51 @@
+<div class="login-page">
+  <div class="logo-section">
+    <img src="../../assets/Logo.png" alt="IEP Logo" class="logo" />
+  </div>
+
+  <h2 class="title">Sign in</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <label for="ssoId">SSO ID<span class="required">*</span></label>
+    <input
+      id="ssoId"
+      kendoTextBox
+      formControlName="ssoId"
+      [ngClass]="{ 'invalid-input': loginForm.get('ssoId')?.invalid && loginForm.get('ssoId')?.touched }"
+    />
+    <div class="error" *ngIf="loginForm.get('ssoId')?.invalid && loginForm.get('ssoId')?.touched">
+      <small *ngIf="loginForm.get('ssoId')?.errors?.['required']">SSO ID is required.</small>
+      <small *ngIf="loginForm.get('ssoId')?.errors?.['email']">Invalid email format.</small>
+    </div>
+
+    <label for="password">Password<span class="required">*</span></label>
+    <input
+      id="password"
+      kendoTextBox
+      type="password"
+      formControlName="password"
+      [ngClass]="{ 'invalid-input': loginForm.get('password')?.invalid && loginForm.get('password')?.touched }"
+    />
+    <div class="error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+      <small>Password is required.</small>
+    </div>
+
+    <div class="error" *ngIf="loginError">
+      <small>{{ loginError }}</small>
+    </div>
+
+    <div class="remember-me">
+  <label class="custom-checkbox">
+    <input type="checkbox" formControlName="rememberMe" />
+    <span class="checkmark"></span>
+    Remember me
+  </label>
+    </div>
+
+
+
+    <button kendoButton type="submit" [disabled]="loginForm.invalid" class="login-button">
+      Login
+    </button>
+  </form>
+</div>
