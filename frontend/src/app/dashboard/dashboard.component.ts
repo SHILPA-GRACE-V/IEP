@@ -33,12 +33,12 @@ import { DashboardDataService } from '../services/dashboard-data.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
-  readonly tabs = [
-    'ISPO', 'VDR', 'VDR Revision',
-    'OTD Trends', 'Engineering Productivity', 'Technical Alignment'
-  ];
+  readonly tabs = ['ISPO', 'VDR', 'VDR Revision', 'OTD Trends', 'Engineering Productivity', 'Technical Alignment'];
   readonly selectedTab = signal('ISPO');
-  readonly filterPanelExpanded = signal(true); // shared toggle state
+  readonly filterPanelExpanded = signal(true);
+  readonly isGridExpanded = signal(false);
+  readonly showSidebar = computed(() => !this.isGridExpanded());
+  readonly showFilters = computed(() => !this.isGridExpanded());
 
   private readonly rawData = signal<any[]>([]);
   readonly selectedActivityIds = signal<string[]>([]);
@@ -89,22 +89,17 @@ export class DashboardComponent implements OnInit {
   onTabSelect = (e: any) => this.selectedTab.set(this.tabs[e.index]);
 
   handleFilterChange(f: any) {
-    this.viewAsFilter.set(f.viewAs);
-    this.functionsFilter.set(f.functions);
-    this.documentTypeFilter.set(f.documentType);
-    this.activityStatusFilter.set(f.activityStatus);
-    this.activityTypeFilter.set(f.activityType);
-    this.finishByFilter.set(f.finishBy);
+    this.viewAsFilter.set(f.viewAs.map((v: any) => v.value ?? v));
+    this.functionsFilter.set(f.functions.map((v: any) => v.value ?? v));
+    this.documentTypeFilter.set(f.documentType.map((v: any) => v.value ?? v));
+    this.activityStatusFilter.set(f.activityStatus.map((v: any) => v.value ?? v));
+    this.activityTypeFilter.set(f.activityType.map((v: any) => v.value ?? v));
+    this.finishByFilter.set(f.finishBy.map((v: any) => v.value ?? v));
   }
 
   handleSearchInput(txt: string) {
     clearTimeout(this.searchDebounceHandle);
     this.searchDebounceHandle = setTimeout(() => this._searchText.set(txt), 250);
-  }
-
-  getProjectName(id: string) {
-    const p = this.contractList.find(prj => prj.projectId === id);
-    return p ? `${p.projectId} – ${p.treePath}` : id;
   }
 
   openPopup(t: string) {
@@ -125,9 +120,32 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  private none = (s: string[]) => s.length === 0;
-  private overlap = (sel: string[], val: string | string[] | undefined) =>
-    this.none(sel) || (Array.isArray(val) ? val : [val ?? '']).some(v => sel.includes(v));
+  handleGridExpandChange(expanded: boolean) {
+    this.toggleGridAndFilters(expanded);
+  }
+
+  toggleGridAndFilters(expanded: boolean) {
+    this.isGridExpanded.set(expanded);
+    this.filterPanelExpanded.set(!expanded);
+  }
+
+  toggleExpandFromGrid(): void {
+    const newVal = !this.isGridExpanded();
+    this.toggleGridAndFilters(newVal);
+  }
+
+  private overlap = (selected: string[], value: string | string[] | undefined): boolean => {
+    if (!selected.length) return true;
+
+    const valueArray = Array.isArray(value)
+      ? value.map(v => String(v).trim().toLowerCase())
+      : typeof value === 'string'
+        ? value.split(',').map(v => v.trim().toLowerCase())
+        : [];
+
+    const selectedSet = new Set(selected.map(v => String(v).trim().toLowerCase()));
+    return valueArray.some(v => selectedSet.has(v));
+  };
 
   private _cacheKey = '';
   private _cacheValue: any[] = [];
@@ -148,17 +166,19 @@ export class DashboardComponent implements OnInit {
     if (key === this._cacheKey) return this._cacheValue;
     this._cacheKey = key;
 
-    return this._cacheValue = this.rawData().filter(r =>
+    const result = this.rawData().filter(r =>
       r.tab === this.selectedTab() &&
       this.overlap(this.viewAsFilter(), r.viewAs) &&
+      this.overlap(this.functionsFilter(), r.functions) &&
       this.overlap(this.documentTypeFilter(), r.documentType) &&
       this.overlap(this.activityStatusFilter(), r.activityStatus) &&
       this.overlap(this.activityTypeFilter(), r.activityType) &&
       this.overlap(this.finishByFilter(), r.finishBy) &&
-      this.overlap(this.functionsFilter(), r.functions) &&
-      this.selectedActivityIds().includes(r.activityId) &&
+      (this.selectedActivityIds().length === 0 || this.selectedActivityIds().includes(r.activityId)) &&
       (!this._searchText() || Object.values(r).some(v =>
         String(v).toLowerCase().includes(this._searchText().toLowerCase())))
     );
+
+    return this._cacheValue = result;
   });
 }

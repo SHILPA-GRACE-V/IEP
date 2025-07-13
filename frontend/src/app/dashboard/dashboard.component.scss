@@ -470,3 +470,60 @@ body {
     height: 16px;
   }
 }
+
+/* ───────── Expand Grid Behavior ───────── */
+/* ───────── Expand Grid Behavior ───────── */
+:host ::ng-deep .dashboard-body.grid-expanded {
+
+
+  app-contract-tree .sidebar-container,
+  app-contract-tree .content-wrapper {
+    display: none !important;
+  }
+
+  // Optional: rotate the arrow if you decide to re-show later
+  app-contract-tree .header .arrow span {
+    transform: rotate(180deg);
+  }
+
+  app-filter-activities .controls-grid,
+  app-filter-activities .doc-summary-bar,
+  app-filter-activities .sprint-bar {
+    display: none !important;
+  }
+
+  app-filter-activities .panel-header .collapse-btn span {
+    transform: rotate(180deg);
+  }
+
+  .main-content {
+    width: 100%;
+  }
+}
+
+
+.grid-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+/* ───────── Modern Activity Grid Style ───────── */
+.grid-container.modern-grid-style {
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  margin: 0 16px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+

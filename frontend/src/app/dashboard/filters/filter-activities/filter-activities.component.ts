@@ -54,7 +54,6 @@ export class FilterActivitiesComponent implements OnInit {
     { text: 'Calendar', value: 'Calendar' }
   ];
 
-  // ✅ Reactive signal values
   viewAs = signal<string | null>(null);
   functions = signal<string | null>(null);
   documentType = signal<string | null>(null);

@@ -1,12 +1,14 @@
 <div class="dashboard-wrapper">
-  <!-- ────────── Top Bar ────────── -->
+  <!-- Top Bar -->
   <div class="top-bar">
+    <!-- Left Side -->
     <div class="top-left">
       <img src="../../assets/notes_24dp_1F1F1F.png" class="hamburger" alt="Toggle sidebar">
       <img src="../../assets/Logo-Dashboard.png" class="logo" alt="IEP Logo">
       <div class="app-info"><h5>| OTR</h5></div>
     </div>
 
+    <!-- Right Side -->
     <div class="top-right">
       <span class="nav-item" (click)="openPopup('request')">My Request</span>
       <span class="nav-item" (click)="openPopup('ticket')">Support Ticket</span>
@@ -40,16 +42,17 @@
     </div>
   </div>
 
-  <!-- ────────── Body (sidebar + main) ────────── -->
-  <div class="dashboard-body">
+  <!-- Main Layout -->
+  <div class="dashboard-body" [class.grid-expanded]="isGridExpanded()">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <app-contract-tree
-  [contractsData]="contractList"
-  (emitSelectedProjectIds)="onProjectSelectionChange($event)">
-</app-contract-tree>
-
+        [contractsData]="contractList"
+        (emitSelectedProjectIds)="onProjectSelectionChange($event)">
+      </app-contract-tree>
     </aside>
 
+    <!-- Main Content -->
     <main class="main-content">
       <app-operation-header></app-operation-header>
 
@@ -59,7 +62,7 @@
                             [selected]="i === 0">
           <ng-template kendoTabContent>
 
-            <!-- Selected-projects one-liner -->
+            <!-- Selected Projects -->
             <div class="selected-projects"
                  *ngIf="selectedTab() === 'ISPO' && filteredData().length">
               <ul>
@@ -69,7 +72,7 @@
               </ul>
             </div>
 
-            <!-- Resource alert -->
+            <!-- Resource Alert -->
             <div class="resource-alert" *ngIf="showResourceAlert()">
               <span class="material-symbols-outlined">notification_important</span>
               <div class="alert-content">
@@ -84,10 +87,25 @@
               <button class="close-alert" (click)="showResourceAlert.set(false)">×</button>
             </div>
 
-            <!-- Filters and Grid -->
-            <app-filter-activities (filtersChanged)="handleFilterChange($event)">
+            <!-- Filter Panel (Always Present, Hidden by Style) -->
+            <app-filter-activities
+              (filtersChanged)="handleFilterChange($event)">
             </app-filter-activities>
-            <app-activity-grid [data]="filteredData()"></app-activity-grid>
+
+            <!-- Grid -->
+            <div class="grid-container" style="position: relative; min-height: 500px;">
+              <app-activity-grid
+                [data]="filteredData()"
+                [viewAs]="viewAsFilter()"
+                [functions]="functionsFilter()"
+                [documentType]="documentTypeFilter()"
+                [activityStatus]="activityStatusFilter()"
+                [activityType]="activityTypeFilter()"
+                [finishBy]="finishByFilter()"
+                (expandChange)="toggleGridAndFilters($event)">
+              </app-activity-grid>
+            </div>
+
           </ng-template>
         </kendo-tabstrip-tab>
       </kendo-tabstrip>

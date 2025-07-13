@@ -1,6 +1,8 @@
 import {
   Component,
   Input,
+  Output,
+  EventEmitter,
   HostListener
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -13,8 +15,7 @@ import {
 } from '@progress/kendo-angular-grid';
 import {
   SortDescriptor,
-  orderBy,
-  DataResult
+  orderBy
 } from '@progress/kendo-data-query';
 
 @Component({
@@ -26,6 +27,14 @@ import {
 })
 export class ActivityGridComponent {
   @Input() data: any[] = [];
+  @Input() viewAs: string[] = [];
+  @Input() functions: string[] = [];
+  @Input() documentType: string[] = [];
+  @Input() activityStatus: string[] = [];
+  @Input() activityType: string[] = [];
+  @Input() finishBy: string[] = [];
+
+  @Output() expandChange = new EventEmitter<boolean>();
 
   pageSize = 10;
   skip = 0;
@@ -36,7 +45,6 @@ export class ActivityGridComponent {
 
   showColumnFilter: string | null = null;
   filterMenuPosition: { top: number; left: number } = { top: 0, left: 0 };
-
   columnFilterValue: { [key: string]: Set<string> } = {};
 
   readonly pagerSettings: PagerSettings = {
@@ -50,6 +58,7 @@ export class ActivityGridComponent {
 
   toggleExpand(): void {
     this.gridExpanded = !this.gridExpanded;
+    this.expandChange.emit(this.gridExpanded);
   }
 
   openSettings(): void {
@@ -69,16 +78,15 @@ export class ActivityGridComponent {
 
   @HostListener('document:keydown.escape')
   handleEscape() {
-    this.showMenu = false;
-    this.showColumnFilter = null;
+    this.closeMenu();
   }
 
   exportCSV(): void {
-    const rows = this.filterRows();
+    const rows = this.pagedData.data;
     if (!rows.length) return;
 
     const header = Object.keys(rows[0]).join(',');
-    const body = rows.map((r: any) => Object.values(r).join(',')).join('\n');
+    const body = rows.map(r => Object.values(r).join(',')).join('\n');
     const blob = new Blob([header + '\n' + body], { type: 'text/csv' });
 
     const url = URL.createObjectURL(blob);
@@ -144,9 +152,33 @@ export class ActivityGridComponent {
     return Array.from(new Set(values.map(v => String(v)))).sort();
   }
 
+  private normalize = (value: string | string[] | undefined): string[] => {
+  if (!value) return [];
+  return Array.isArray(value)
+    ? value.map(v => String(v).trim().toLowerCase())
+    : String(value).split(',').map(v => v.trim().toLowerCase());
+};
+
+private overlap = (filter: string[], value: string | string[] | undefined): boolean => {
+  if (!filter.length) return true;
+  const normalized = this.normalize(value);
+  const selectedSet = new Set(filter.map(v => String(v).trim().toLowerCase()));
+  return normalized.some(v => selectedSet.has(v));
+};
+
+
   private filterRows(): any[] {
     const term = this.globalSearch.trim().toLowerCase();
-    let rows = this.data;
+    let rows = [...this.data];
+
+    rows = rows.filter(row =>
+      this.overlap(this.viewAs, row.viewAs) &&
+      this.overlap(this.functions, row.functions) &&
+      this.overlap(this.documentType, row.documentType) &&
+      this.overlap(this.activityStatus, row.activityStatus) &&
+      this.overlap(this.activityType, row.activityType) &&
+      this.overlap(this.finishBy, row.finishBy)
+    );
 
     if (term) {
       rows = rows.filter((row: any) =>
@@ -163,7 +195,7 @@ export class ActivityGridComponent {
     return orderBy(rows, this.sort);
   }
 
-  get pagedData(): GridDataResult | DataResult {
+  get pagedData(): GridDataResult {
     const rows = this.filterRows();
     return {
       data: rows.slice(this.skip, this.skip + this.pageSize),

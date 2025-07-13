@@ -7,25 +7,26 @@
     </div>
 
     <div class="actions">
+      <!-- Global Search -->
       <label class="search-wrapper">
         <input type="text" [(ngModel)]="globalSearch" placeholder="Search in all column" />
         <img src="../../../../assets/search.png" class="search-icon" />
       </label>
 
-      <button class="icon-btn" (click)="toggleExpand()" [title]="gridExpanded ? 'Close' : 'Expand'">
-        <span class="material-symbols-outlined">
-        {{ gridExpanded ? 'close' : 'fullscreen_exit' }}
-        </span>
+      <!-- Expand / Collapse Button -->
+      <button class="icon-btn" (click)="toggleExpand()" [title]="gridExpanded ? 'Collapse Grid' : 'Expand Grid'">
+        <span class="material-symbols-outlined">{{ gridExpanded ? 'close' : 'fullscreen_exit' }}</span>
       </button>
 
-
+      <!-- Settings -->
       <button class="icon-btn" (click)="openSettings()" title="Settings">
         <img src="../../../../assets/setting.png" alt="Settings" />
       </button>
 
+      <!-- Menu -->
       <div class="menu-wrapper">
         <button class="icon-btn" (click)="toggleMenu($event)" title="More">
-          <span class="material-symbols-outlined" style="font-size: 18px;">more_vert</span>
+          <span class="material-symbols-outlined">more_vert</span>
         </button>
         <ul class="menu" *ngIf="showMenu" (click)="$event.stopPropagation()">
           <li><a (click)="exportCSV()">Export to CSV</a></li>
@@ -35,15 +36,16 @@
     </div>
   </div>
 
+  <!-- Empty Banner -->
   <div class="empty-banner" *ngIf="pagedData.total === 0">
     <span>No Data is available</span>
   </div>
 
-  <!-- Grid -->
+  <!-- Kendo Grid -->
   <kendo-grid
     *ngIf="pagedData.total"
     [data]="pagedData"
-    [height]="gridExpanded ? 560 : 420"
+    [height]="gridExpanded ? 9999 : 420"
     [pageSize]="pageSize"
     [skip]="skip"
     [pageable]="pagerSettings"
@@ -62,11 +64,13 @@
         <ng-template kendoGridHeaderTemplate>
           <div class="hdr-wrap">
             <span (click)="onSortClick(column)">
-              {{ column === 'projectId' ? 'Project ID' :
-                 column === 'activityId' ? 'Activity ID' :
-                 column === 'activityName' ? 'Activity Name' :
-                 column === 'primaryResource' ? 'Primary Resource' :
-                 column === 'earlyDate' ? 'Early Date' : column }}
+              {{
+                column === 'projectId' ? 'Project ID' :
+                column === 'activityId' ? 'Activity ID' :
+                column === 'activityName' ? 'Activity Name' :
+                column === 'primaryResource' ? 'Primary Resource' :
+                column === 'earlyDate' ? 'Early Date' : column
+              }}
             </span>
             <span class="material-symbols-outlined hdr-icon"
                   (click)="toggleColumnFilterMenu(column, $event)">more_vert</span>
@@ -76,21 +80,20 @@
     </ng-container>
   </kendo-grid>
 
-  <!-- Floating Filter Menu -->
+  <!-- Floating Column Filter Menu -->
   <div class="floating-filter-menu" *ngIf="showColumnFilter"
-     [ngStyle]="{ top: filterMenuPosition.top + 'px', left: filterMenuPosition.left + 'px' }"
-     (click)="$event.stopPropagation()">
-  <ul class="column-filter-menu">
-    <li (click)="clearFilter(showColumnFilter!)">Clear All</li>
-    <li *ngFor="let value of getUniqueValues(showColumnFilter!)">
-      <label class="filter-checkbox">
-        <input type="checkbox"
-               [checked]="isValueSelected(showColumnFilter!, value)"
-               (change)="toggleFilterValue(showColumnFilter!, value)" />
-        {{ value }}
-      </label>
-    </li>
-  </ul>
-</div>
-
+       [ngStyle]="{ top: filterMenuPosition.top + 'px', left: filterMenuPosition.left + 'px' }"
+       (click)="$event.stopPropagation()">
+    <ul class="column-filter-menu">
+      <li (click)="clearFilter(showColumnFilter!)">Clear All</li>
+      <li *ngFor="let value of getUniqueValues(showColumnFilter!)">
+        <label class="filter-checkbox">
+          <input type="checkbox"
+                 [checked]="isValueSelected(showColumnFilter!, value)"
+                 (change)="toggleFilterValue(showColumnFilter!, value)" />
+          {{ value }}
+        </label>
+      </li>
+    </ul>
+  </div>
 </div>
