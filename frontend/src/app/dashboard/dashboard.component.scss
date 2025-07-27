@@ -7,7 +7,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #fff;
+  background: #f8faf9;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -15,7 +15,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #fff; 
+  background: #f8faf9; 
 }
 
 .hamburger {
@@ -205,7 +205,7 @@ body {
 .sidebar {
   flex-shrink: 0;
   background: #f9f9f9;
-  border-right: 1px solid #ccc;
+  //border-right: 1px solid #ccc;
 }
 
 .main-content {
@@ -214,13 +214,13 @@ body {
   display: flex;
   flex-direction: column;
   padding: 0;
-  background: #ffffff; 
+  background: #f8faf9; 
 }
 
 .dashboard-body,
 .k-tabstrip,
 .k-tabstrip-content {
-  background: #fafbfc;
+  background: #f8faf9;
 }
 
 /* ───────── Selected Projects Line ───────── */
@@ -248,53 +248,86 @@ body {
     content: ', ';
   }
 }
+/* Remove default Kendo tab styles */
+:host ::ng-deep .k-tabstrip .k-item,
+:host ::ng-deep .k-tabstrip .k-item.k-selected,
+:host ::ng-deep .k-tabstrip .k-item.k-state-active {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: table-cell; /* Equal width columns */
+  vertical-align: bottom;
+  text-align: center;
+}
 
-/* ───────── Kendo TabStrip ───────── */
-:host ::ng-deep .k-tabstrip-top {
-  > .k-content {
-    border-top: none;
-    box-shadow: none;
-  }
+/* Tab wrapper container */
+:host ::ng-deep .k-tabstrip .k-tabstrip-items-wrapper {
+  display: table;                      /*  Acts like table row */
+  width: 100%;                         /*  Full width of parent */
+  table-layout: fixed;                /*  Equal-width columns */
+  border-collapse: collapse;          /*  No gaps */
+  position: relative;                 /* For ::after line */
+  border-bottom: none;                /* Remove full-width border */
+}
 
-  > .k-tabstrip-items {
-    border-bottom: 1px solid #e0e0e0;
-    background: #fafbfc;
-  }
+/* Append trimmed black line */
+:host ::ng-deep .k-tabstrip .k-tabstrip-items-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20px;                         /*  trim left */
+  right: 20px;                        /*  trim right */
+  height: 0.5px;
+  background-color: rgb(85, 83, 83) !important;
+}
 
-  .k-item .k-link {
-    padding: 12px 20px;
-    background: none;
-    border: none;
-    font: 600 13px/1 'Roboto', sans-serif;
-    color: #343a40;
-    transition: color 0.15s;
-  }
+/* Tab clickable label */
+:host ::ng-deep .k-tabstrip .k-item .k-link {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  padding: 0px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b4b4b !important; /* Default dark grey */
+  background: none;
+  border: none;
+  text-align: center;
+  white-space: nowrap;
+}
 
-  .k-item:not(.k-state-active) .k-link:hover {
-    color: #212529;
-  }
+/* Selected tab label gets black and bold */
+:host ::ng-deep .k-tabstrip .k-item.k-selected .k-link,
+:host ::ng-deep .k-tabstrip .k-item.k-state-active .k-link {
+  color: #000000 !important;
+  font-weight: 900 !important;
+}
 
-  .k-item.k-state-active .k-link {
-    color: #007e33;
-    position: relative;
-    cursor: default;
-  }
+/* Wrapper for text and underline */
+.custom-tab-label {
+  position: relative;
+  display: inline-block;
+  width: auto;
+  padding: 0;
+  margin: 0 auto;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: #000;
+}
 
-  .k-item.k-state-active .k-link::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -1px;
-    height: 3px;
-    background: #007e33;
-    border-radius: 2px 2px 0 0;
-  }
-
-  .k-item:focus .k-link {
-    box-shadow: none !important;
-    outline: none !important;
-  }
+/* Green underline for active tab */
+.green-underline {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background-color: #007e33;
+  border-radius: 2px;
+  z-index: 2;
 }
 
 /* ───────── Operation Header ───────── */
@@ -516,14 +549,34 @@ body {
 
 /* ───────── Modern Activity Grid Style ───────── */
 .grid-container.modern-grid-style {
-  padding: 1rem;
   background: #ffffff;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  margin: 0 16px;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
 }
 
+
+
+
+
+
+
+.tab-content-wrapper {
+  background-color: #f8faf9; /* light grey */
+  padding: 1rem;
+}
+
+
+/* Force background for kendoTabContent area */
+:host ::ng-deep .tab-panel-content-wrapper {
+  background-color: #f8faf9 !important;
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
+}
+:host ::ng-deep .k-tabstrip-content {
+  background-color: #f8faf9 !important;
+}

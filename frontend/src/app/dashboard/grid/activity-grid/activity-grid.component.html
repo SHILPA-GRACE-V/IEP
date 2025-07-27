@@ -1,3 +1,4 @@
+<!-- activity-grid.component.html -->
 <div class="activity-grid-wrapper" [class.expanded]="gridExpanded">
   <!-- Header -->
   <div class="activity-header">
@@ -15,7 +16,9 @@
 
       <!-- Expand / Collapse Button -->
       <button class="icon-btn" (click)="toggleExpand()" [title]="gridExpanded ? 'Collapse Grid' : 'Expand Grid'">
-        <span class="material-symbols-outlined">{{ gridExpanded ? 'close' : 'fullscreen_exit' }}</span>
+        <span class="material-symbols-outlined">
+          {{ gridExpanded ? 'close' : 'fullscreen_exit' }}
+        </span>
       </button>
 
       <!-- Settings -->
@@ -42,38 +45,44 @@
   </div>
 
   <!-- Kendo Grid -->
-  <kendo-grid
-    *ngIf="pagedData.total"
-    [data]="pagedData"
-    [height]="gridExpanded ? 9999 : 420"
-    [pageSize]="pageSize"
-    [skip]="skip"
-    [pageable]="pagerSettings"
-    [sortable]="true"
-    [sort]="sort"
-    (sortChange)="onSortChange($event)"
-    scrollable="none"
-    [rowHeight]="36"
-    (pageChange)="pageChange($event)"
-  >
-    <ng-container *ngFor="let column of ['projectId', 'activityId', 'activityName', 'primaryResource', 'earlyDate']">
-      <kendo-grid-column
-        [field]="column"
-        [width]="column === 'activityName' ? 250 : column === 'primaryResource' ? 200 : 160"
-        [sortable]="false">
+  <kendo-grid *ngIf="pagedData.total" [data]="pagedData" [height]="gridExpanded ? 9999 : 420" [pageSize]="pageSize"
+    [skip]="skip" [pageable]="pagerSettings" [sortable]="true" [sort]="sort" (sortChange)="onSortChange($event)"
+    scrollable="none" [rowHeight]="36" (pageChange)="pageChange($event)">
+    <ng-container *ngFor="
+        let column of [
+          'projectId',
+          'activityId',
+          'activityName',
+          'primaryResource',
+          'earlyDate'
+        ]
+      ">
+      <kendo-grid-column [field]="column" [width]="
+          column === 'activityName'
+            ? 250
+            : column === 'primaryResource'
+            ? 200
+            : 160
+        " [sortable]="false">
         <ng-template kendoGridHeaderTemplate>
           <div class="hdr-wrap">
             <span (click)="onSortClick(column)">
               {{
-                column === 'projectId' ? 'Project ID' :
-                column === 'activityId' ? 'Activity ID' :
-                column === 'activityName' ? 'Activity Name' :
-                column === 'primaryResource' ? 'Primary Resource' :
-                column === 'earlyDate' ? 'Early Date' : column
+              column === 'projectId'
+              ? 'Project ID'
+              : column === 'activityId'
+              ? 'Activity ID'
+              : column === 'activityName'
+              ? 'Activity Name'
+              : column === 'primaryResource'
+              ? 'Primary Resource'
+              : column === 'earlyDate'
+              ? 'Early Date'
+              : column
               }}
             </span>
             <span class="material-symbols-outlined hdr-icon"
-                  (click)="toggleColumnFilterMenu(column, $event)">more_vert</span>
+              (click)="toggleColumnFilterMenu(column, $event)">more_vert</span>
           </div>
         </ng-template>
       </kendo-grid-column>
@@ -82,15 +91,33 @@
 
   <!-- Floating Column Filter Menu -->
   <div class="floating-filter-menu" *ngIf="showColumnFilter"
-       [ngStyle]="{ top: filterMenuPosition.top + 'px', left: filterMenuPosition.left + 'px' }"
-       (click)="$event.stopPropagation()">
+    [ngStyle]="{ top: filterMenuPosition.top + 'px', left: filterMenuPosition.left + 'px' }"
+    (click)="$event.stopPropagation()">
+    <!-- 1) Actions row: Clear & Select -->
+    <div class="filter-actions">
+      <!-- Select All as green button -->
+      <button type="button" class="btn-select" (click)="selectAllFilter(showColumnFilter!)">
+        Select All
+      </button>
+      <!-- Clear All as icon -->
+      <button type="button" class="btn-clear" (click)="clearFilter(showColumnFilter!)" title="Clear All">
+        <span class="material-symbols-outlined">filter_alt_off</span>
+      </button>
+
+      
+    </div>
+
+    <!-- 2) Search row -->
+    <div class="filter-search-wrapper">
+      <input type="text" class="filter-search" placeholder="Search filters..." [(ngModel)]="filterSearch" />
+    </div>
+
+    <!-- 3) Filter list -->
     <ul class="column-filter-menu">
-      <li (click)="clearFilter(showColumnFilter!)">Clear All</li>
-      <li *ngFor="let value of getUniqueValues(showColumnFilter!)">
+      <li *ngFor="let value of getFilteredValues(showColumnFilter!)">
         <label class="filter-checkbox">
-          <input type="checkbox"
-                 [checked]="isValueSelected(showColumnFilter!, value)"
-                 (change)="toggleFilterValue(showColumnFilter!, value)" />
+          <input type="checkbox" [checked]="isValueSelected(showColumnFilter!, value)"
+            (change)="toggleFilterValue(showColumnFilter!, value)" />
           {{ value }}
         </label>
       </li>

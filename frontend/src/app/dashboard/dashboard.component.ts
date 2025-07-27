@@ -33,8 +33,10 @@ import { DashboardDataService } from '../services/dashboard-data.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
-  readonly tabs = ['ISPO', 'VDR', 'VDR Revision', 'OTD Trends', 'Engineering Productivity', 'Technical Alignment'];
+  readonly tabs = ['ISPO', 'VDR', 'VDR Revision', 'VDR Finalization', 'OTD Trends', 'Engineering Productivity', 'Technical Alignment'];
   readonly selectedTab = signal('ISPO');
+  readonly selectedTabIndex = signal(0); 
+
   readonly filterPanelExpanded = signal(true);
   readonly isGridExpanded = signal(false);
   readonly showSidebar = computed(() => !this.isGridExpanded());
@@ -86,7 +88,11 @@ export class DashboardComponent implements OnInit {
     this.selectedActivityIds.set(activityIds);
   };
 
-  onTabSelect = (e: any) => this.selectedTab.set(this.tabs[e.index]);
+
+  onTabSelect = (e: any) => {
+    this.selectedTabIndex.set(e.index);
+    this.selectedTab.set(this.tabs[e.index]);
+  };
 
   handleFilterChange(f: any) {
     this.viewAsFilter.set(f.viewAs.map((v: any) => v.value ?? v));

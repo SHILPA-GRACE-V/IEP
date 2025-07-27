@@ -37,7 +37,7 @@
       <!-- Search Section -->
       <div class="search-section">
         <div class="search-input-wrapper">
-          <input type="text" placeholder="Search job number or contract name..." />
+          <input type="text" placeholder="Search job number or contract name..." [(ngModel)]="searchQueryValue" />
           <span class="material-symbols-outlined">search</span>
         </div>
         <button class="advanced-btn" (click)="toggleAdvancedSearch()" [class.expanded]="showAdvancedSearch">

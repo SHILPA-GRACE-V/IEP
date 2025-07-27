@@ -1,83 +1,80 @@
-.activity-grid-wrapper {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+/* ── Grid wrapper ───────────────────────────────────────────────────────── */
 
-  kendo-grid {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    font-size: 13px;
-  }
-
-  .k-grid-content {
-    flex: 1 1 auto;
-    overflow: auto;
-    border-bottom: 1px solid #e0e0e0;
-  }
-
-  .k-grid-pager {
-    flex-shrink: 0;
-    padding-top: 0.75rem;
-    background: #fff;
-    border-top: 1px solid #e0e0e0;
-    font-size: 13px;
-  }
-
-  &.expanded {
-    position: absolute;
-    top: 32px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    padding: 1rem;
-    border-radius: 0;
-    box-shadow: none;
-    background: #fff;
-    height: calc(100vh - 56px);
-
-    display: flex;
-    flex-direction: column;
-
-    kendo-grid {
-      flex: 1 1 auto;
-      min-height: 0;
-    }
-
-    .k-grid-content {
-      flex: 1 1 auto;
-      overflow: auto;
-    }
-
-    .k-grid-pager {
-      border-top: 1px solid #e0e0e0;
-    }
-  }
+:host ::ng-deep .k-grid-pager {
+  background: transparent !important;
+  border-top: 1px solid #ddd !important;
+  padding: 0.5rem 1rem !important;
 }
 
-// Sticky grid headers
+/* ✅ Force pager and numbers to align left */
+:host ::ng-deep .k-grid .k-grid-pager {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+}
+
+:host ::ng-deep .k-grid .k-pager {
+  width: auto !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+}
+
+/* ✅ Green text for pager numbers */
+:host ::ng-deep .k-pager .k-pager-numbers-wrap .k-link {
+  background: transparent;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 13px;
+  color: #168f6a;
+}
+
+/* ✅ Green highlight for selected page */
+:host ::ng-deep .k-pager .k-pager-numbers-wrap .k-item.k-state-selected .k-link {
+  background-color: #168f6a !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+}
+
+/* ✅ Hover: soft green */
+:host ::ng-deep .k-pager .k-pager-numbers-wrap .k-link:hover {
+  background-color: #d6f5e6 !important;
+}
+
+/* ── Sticky headers & column‐header icons ───────────────────────────────── */
 :host ::ng-deep .k-grid-header {
   position: sticky;
   top: 0;
-  background: white;
+  background-color: #e3e3e3 !important;
+  border-bottom: 1px solid #ccc;
   z-index: 5;
 }
 
-// Grid header title + filter icon
-.hdr-wrap {
+:host ::ng-deep .k-grid-header th.k-header {
+  background-color: #e3e3e3 !important;
+  color: #222 !important;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+:host ::ng-deep .k-grid-header .k-header {
+  font-weight: 600;
+  color: #222 !important;
+  font-size: 13px;
+  background-color: transparent !important;
+  padding: 10px 12px;
+}
+
+:host ::ng-deep .hdr-wrap {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  width: 100%;
   font-weight: 600;
 
-  .material-symbols-outlined {
+  .hdr-icon {
+    margin-left: auto;
     font-size: 16px;
     color: #666;
     cursor: pointer;
@@ -88,17 +85,20 @@
   }
 }
 
-// Header top section
+/* ── Top header section (activities title, search, buttons) ───────────── */
 .activity-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 12px;
   margin-bottom: 12px;
+  padding-top: 4px;
 
   .title-box {
     display: flex;
     align-items: baseline;
     gap: 12px;
+    padding-left: 1rem;
 
     .title {
       font: 600 16px/1 'Roboto', sans-serif;
@@ -203,6 +203,7 @@
   }
 }
 
+/* ── Empty banner ──────────────────────────────────────────────────────── */
 .empty-banner {
   display: flex;
   justify-content: center;
@@ -211,6 +212,7 @@
   color: #666;
 }
 
+/* ── Floating column filter menu ───────────────────────────────────────── */
 .floating-filter-menu {
   position: fixed;
   background: #fff;
@@ -218,26 +220,72 @@
   border-radius: 4px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   z-index: 9999;
-  min-width: 140px;
-}
+  width: 220px;
 
-.column-filter-menu {
-  list-style: none;
-  padding: 4px 0;
-  margin: 0;
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+    padding: 6px 8px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fafafa;
+  }
 
-  li {
-    padding: 6px 12px;
+  .btn-clear {
+    background: none;
+    border: none;
+    padding: 4px;
     cursor: pointer;
-    font-size: 13px;
-    color: #333;
+    color: #666;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
 
     &:hover {
-      background-color: #f0f0f0;
+      color: #000;
     }
+  }
+
+  .btn-select {
+    background-color: #fff;
+    color: #168f6a;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .filter-search-wrapper {
+    padding: 6px;
+    border-bottom: 1px solid #e0e0e0;
+
+    .filter-search {
+      width: 100%;
+      padding: 4px 0;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      &:focus {
+        outline: none;
+        border-color: #3fa9f5;
+        box-shadow: 0 0 0 2px rgba(63, 169, 245, 0.15);
+      }
+    }
+  }
+
+  .column-filter-menu {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    max-height: 200px;
+    overflow-y: auto;
   }
 }
 
+/* ── Filter checkbox style ─────────────────────────────────────────────── */
 .filter-checkbox {
   display: flex;
   align-items: center;
@@ -246,10 +294,20 @@
   cursor: pointer;
 
   input[type="checkbox"] {
-    accent-color: #28a745;
+    accent-color: #168f6a;
   }
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: #fff;
   }
+}
+
+/* ── Grid container overflow fix for filter popup ───────────────────────── */
+:host ::ng-deep .activity-grid-wrapper {
+  overflow: visible !important;
+  position: relative !important;
+}
+
+:host ::ng-deep .k-grid-content {
+  overflow: visible !important;
 }

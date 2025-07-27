@@ -32,7 +32,7 @@
     "@progress/kendo-angular-popup": "19.1.0",
     "@progress/kendo-licensing": "^1.5.0",
     "@progress/kendo-svg-icons": "^4.0.0",
-    "@progress/kendo-theme-default": "11.0.2",
+    "@progress/kendo-theme-default": "^11.2.0",
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

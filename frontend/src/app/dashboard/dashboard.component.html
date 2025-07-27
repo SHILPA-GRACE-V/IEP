@@ -55,13 +55,17 @@
     <!-- Main Content -->
     <main class="main-content">
       <app-operation-header></app-operation-header>
-
       <kendo-tabstrip (tabSelect)="onTabSelect($event)">
-        <kendo-tabstrip-tab *ngFor="let tab of tabs; let i = index"
-                            [title]="tab"
-                            [selected]="i === 0">
+        <kendo-tabstrip-tab *ngFor="let tab of tabs; let i = index" [title]="tab" [selected]="i === selectedTabIndex()">
+          <div style="height: 8px;"></div>
+          <ng-template kendoTabTitle>
+            <div class="custom-tab-label">
+              {{ tab }}
+              <div *ngIf="i === selectedTabIndex()" class="green-underline"></div>
+            </div>
+          </ng-template>
           <ng-template kendoTabContent>
-
+            <!-- <div class="tab-content-wrapper"> -->
             <!-- Selected Projects -->
             <div class="selected-projects"
                  *ngIf="selectedTab() === 'ISPO' && filteredData().length">
@@ -91,9 +95,9 @@
             <app-filter-activities
               (filtersChanged)="handleFilterChange($event)">
             </app-filter-activities>
-
+            <div style="height: 16px;"></div>
             <!-- Grid -->
-            <div class="grid-container" style="position: relative; min-height: 500px;">
+            <div class="grid-container modern-grid-style" style="position: relative; min-height: 500px;">
               <app-activity-grid
                 [data]="filteredData()"
                 [viewAs]="viewAsFilter()"
@@ -104,8 +108,8 @@
                 [finishBy]="finishByFilter()"
                 (expandChange)="toggleGridAndFilters($event)">
               </app-activity-grid>
+            <!-- </div> -->
             </div>
-
           </ng-template>
         </kendo-tabstrip-tab>
       </kendo-tabstrip>

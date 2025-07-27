@@ -62,10 +62,10 @@
 .sidebar-container {
   width: 280px;
   background: #fff;
-  border-right: 1px solid #e0e0e0;
+  //border-right: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
-  transition: width 0.3s;
+  //transition: width 0.3s;
 
   &.collapsed {
     width: 0;
@@ -82,6 +82,7 @@
     align-items: center;
     padding: 22px 16px;
     border-bottom: 1px solid #ccc;
+    border-right: 1px solid #e0e0e0;
     gap: 12px;
 
     h3 {
